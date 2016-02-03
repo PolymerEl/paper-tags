@@ -1,0 +1,29 @@
+{
+  "name": "paper-tags",
+  "version": "1.0.0",
+  "authors": [
+    "christophe.geiser <christophe.geiser@e-smile.org>"
+  ],
+  "description": "paper-input with tags",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "seed"
+  ],
+  "main": "paper-tags.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/PolymerEl/paper-tags",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/demo/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  }
+}
