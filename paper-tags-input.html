@@ -87,12 +87,12 @@ style this element.
     </style>
     <paper-input on-keydown="_keyDown" readonly$="[[readonly]]"  placeholder$="[[placeholder]]" label="[[label]]" bind-value="{{value}}" maxlength$="[[maxlength]]" minlength$="[[minlength]]" invalid="{{invalid}}">
       <content select="[prefix]" prefix></content>
-      <paper-tags id="paper-tags" readonly$="[[readonly]]" tags="{{tags}}" icon="[[icon]]" item-class="[[itemClass]]" tag-tpl="[[tagTpl]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" is-removable="[[is-removable]]" prefix></paper-tags>
+      <paper-tags id="paper-tags" readonly$="[[readonly]]" tags="{{tags}}" icon="[[icon]]" item-class="[[itemClass]]" tag-tpl="[[tagTpl]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" is-removable="[[isRemovable]]" prefix></paper-tags>
       <content select="[suffix]" suffix></content>
     </paper-input>
-    <template is="dom-if" if="{{ showCounter }}">
+    <template is="dom-if" if="{{showCounter}}">
       <div class="paper-tags-counter">
-        <paper-badge class="paper-tags-badge" label="[[_tagsLength(tags)]]"></paper-badge> [[showCounter]]
+        <paper-badge class="paper-tags-badge" label="[[tags.length]]"></paper-badge> [[showCounter]]
       </div>
     </template>
   </template>
@@ -102,9 +102,9 @@ Polymer({
   is: 'paper-tags-input',
 
   properties: {
-    readonly : {
-       type: Boolean, 
-       reflectToAttribute: true
+    isRemovable: {
+      type:Boolean,
+      value: true
     },
     showCounter: String,
     itemClass: String,
@@ -113,27 +113,18 @@ Polymer({
       type: String,
       value: 'id'
     },
-    classAccessor: {
-      type: String,
-      value: 'class'
-    },
-    iconAccessor: {
-      type: String,
-      value: 'icon'
-    },
-    labelAccessor: {
-      type: String,
-      value: 'label'
-    },
+    classAccessor: String,
+    iconAccessor: String,
+    labelAccessor: String,
     tagTpl: Object,
     tags: {
       type: Array,
-      // notify: true,
-      value: []
+      notify: true
     }
   },
 
   behaviors: [
+    Polymer.PaperInputBehavior,
   ],
 
   _removeLast: function() {
@@ -159,12 +150,6 @@ Polymer({
       tag[this.keyAccessor] = id;
     }
     this.push('tags', tag);
-    this.tags.splice();
-    // this.tags = this.tags.slice();
-  },
-
-  _tagsLength: function(tags) {
-    return tags.length;
   },
 
   _keyDown: function(event) {
