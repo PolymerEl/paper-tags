@@ -16,7 +16,7 @@
   "main": [
     "paper-tags-input.html",
     "paper-tags.html",
-    "paper-tags-dropdown"
+    "paper-tags-dropdown.html"
   ],
   "license": "http://polymer.github.io/LICENSE.txt",
   "homepage": "https://github.com/PolymerEl/paper-tags",

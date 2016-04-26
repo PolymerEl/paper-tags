@@ -1,62 +1,91 @@
-# seed-element
 
-An element providing a starting point for your own reusable Polymer elements.
+[Demo and API docs](http://polymerel.github.io/paper-tags/components/paper-tags/#paper-tags)
 
+# Paper-tags
 
-## Dependencies
+Series of elements for handling tags with Polymer and custom elements: 
 
-Element dependencies are managed via [Bower](http://bower.io/). You can
-install that via:
+- [paper-tags.html](#paper-tags.html)
+- paper-tags-input.html
+- paper-tags-dropDown.html
 
-    npm install -g bower
+<div>
+	<img src="https://raw.githubusercontent.com/PolymerEl/paper-tags/master/images/paper-tags.png" width="600"></img>
+</div>
 
-Then, go ahead and download the element's dependencies:
+## paper-tags.html
 
-    bower install
+An element for setting  displaying a single tag
 
+### Example : 
+    
+    <paper-tags  label-accessor="label" items='[{"id":1, "l" :"me", "label":"hello"},{"id":2, "label":"new"}]'></paper-tags>
 
-## Playing With Your Element
+### Styling
 
-If you wish to work on your element in isolation, we recommend that you use
-[Polyserve](https://github.com/PolymerLabs/polyserve) to keep your element's
-bower dependencies in line. You can install it via:
+The following custom properties and mixins are available for styling:
 
-    npm install -g polyserve
-
-And you can run it via:
-
-    polyserve
-
-Once running, you can preview your element at
-`http://localhost:8080/components/seed-element/`, where `seed-element` is the name of the directory containing it.
-
-
-## Testing Your Element
-
-Simply navigate to the `/test` directory of your element to run its tests. If
-you are using Polyserve: `http://localhost:8080/components/seed-element/test/`
-
-### web-component-tester
-
-The tests are compatible with [web-component-tester](https://github.com/Polymer/web-component-tester).
-Install it via:
-
-    npm install -g web-component-tester
-
-Then, you can run your tests on _all_ of your local browsers via:
-
-    wct
-
-#### WCT Tips
-
-`wct -l chrome` will only run tests in chrome.
-
-`wct -p` will keep the browsers alive after test runs (refresh to re-run).
-
-`wct test/some-file.html` will test only the files you specify.
+Custom property | Description | Default
+----------------|-------------|----------
+`--paper-tags` | Mixin applied to the host | `{}`
+`--paper-tags-item` | Mixin applied to the .paper-tag-item | `{}`
+`--paper-tag-margin` | margin between tags | `3px`
+`--paper-tag-focus-color` | the tag border color | `--default-primary-color`
+`--paper-tag-text-color` | the tag text color | `--secondary-text-color`
 
 
-## still TODO
+
+## paper-tags-input.html
+
+An element for settings tags tags, based on paper-input
+
+### Example: 
+
+    <paper-tags-input label="input label" show-counter="tags" items='["hello", "new"]'  maxLength="10"></paper-tags-input>
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--paper-tag-margin`   | bottom margin for tags | 3px  
+
+### Example: 
+
+    <paper-tags-input label="input label" show-counter="tags" items='["hello", "new"]'  maxLength="10"></paper-tags-input>
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--paper-tag-margin`   | bottom margin for tags | 3px        
+
+
+## paper-tags-dropDown.html
+
+`paper-tag-dropdown` is based on paper-menu-dropdown, with selected item menu displayed as tags.
+
+### Example:
+
+      <paper-tags-dropdown items="{{items}}" items='[{"id": 1, "label": "first" }, {"id":"5", "label": "last" }]' noink label="label dropdown"  value-object='{"5": "true"}' ></paper-tags-dropdown>
+
+### Styling
+
+Styling from paper-dropdown-menu are available
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--paper-dropdown-menu` | A mixin that is applied to the element host | `{}`
+`--paper-dropdown-menu-disabled` | A mixin that is applied to the element host when disabled | `{}`
+`--paper-dropdown-menu-ripple` | A mixin that is applied to the internal ripple | `{}`
+`--paper-dropdown-menu-button` | A mixin that is applied to the internal menu button | `{}`
+`--paper-dropdown-menu-input` | A mixin that is applied to the internal paper input | `{}`
+`--paper-dropdown-menu-icon` | A mixin that is applied to the internal icon | `{}`
+
+### still TODO
 ~~- input tags as behavior~~
 ~~- tags renamed items ?~~
 ~~- listen to iron-select and deselect~~

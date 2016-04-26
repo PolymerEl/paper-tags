@@ -12,7 +12,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="paper-tags.html">
 <link rel="import" href="paper-tags-behavior.html">
 <!--
-An element for setting tags
+An element for settings tags tags, based on paper-input
+
+### Example: 
+
+    <paper-tags-input label="input label" show-counter="tags" items='["hello", "new"]'  maxLength="10"></paper-tags-input>
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--paper-tag-margin`   | bottom margin for tags | 3px        
 
 @element paper-tags-input
 @demo demo/index.html
