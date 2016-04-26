@@ -38,7 +38,9 @@
     "paper-item": "^1.2.1",
     "paper-ripple": "*",
     "paper-styles": "^1.1.4",
-    "paper-dropdown-menu": "^1.2.1"
+    "paper-dropdown-menu": "^1.2.1",
+    "iron-demo-helpers": "^1.0.0",
+    "paper-menu": "^1.2.2"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
