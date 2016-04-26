@@ -4,14 +4,16 @@
   "authors": [
     "christophe.geiser <christophe.geiser@e-smile.org>"
   ],
-  "description": "paper-input with tags",
+  "description": "paper-input and paper-dropdown-menu with tags",
   "keywords": [
     "web-component",
     "web-components",
+    "tags",
+    "material desigh"
     "polymer",
     "seed"
   ],
-  "main": "paper-tags.html",
+  "main": ["paper-tags-input.html","paper-tags.html", "paper-tags-dropdown"],
   "license": "http://polymer.github.io/LICENSE.txt",
   "homepage": "https://github.com/PolymerEl/paper-tags",
   "ignore": [

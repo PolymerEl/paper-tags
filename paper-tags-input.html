@@ -10,47 +10,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="paper-tags.html">
+<link rel="import" href="paper-tags-behavior.html">
 <!--
-Material design: [Text fields](https://www.google.com/design/spec/components/text-fields.html)
+An element for setting tags
 
-`<paper-input>` is a single-line text field with Material Design styling.
-
-    <paper-input label="Input label"></paper-input>
-
-It may include an optional error message or character counter.
-
-    <paper-input error-message="Invalid input!" label="Input label"></paper-input>
-    <paper-input char-counter label="Input label"></paper-input>
-
-It can also include custom prefix or suffix elements, which are displayed
-before or after the text input itself. In order for an element to be
-considered as a prefix, it must have the `prefix` attribute (and similarly
-for `suffix`).
-
-    <paper-input label="total">
-      <div prefix>$</div>
-      <paper-icon-button suffix icon="clear"></paper-icon-button>
-    </paper-input>
-
-A `paper-input` can use the native `type=search` or `type=file` features.
-However, since we can't control the native styling of the input, in these cases
-it's recommended to use a placeholder text, or `always-float-label`,
-as to not overlap the native UI (search icon, file button, etc.).
-
-    <paper-input label="search!" type="search"
-        placeholder="search for cats" autosave="test" results="5">
-    </paper-input>
-
-See `Polymer.PaperInputBehavior` for more API docs.
-
-### Styling
-
-See `Polymer.PaperInputContainer` for a list of custom properties used to
-style this element.
-
-@group Paper Elements
-@element paper-input
-@hero hero.svg
+@element paper-tags-input
 @demo demo/index.html
 -->
 <dom-module id="paper-tags-input">
@@ -58,7 +22,7 @@ style this element.
     <style>
     :host {
       display: block;
-      --paper-tag-margin:  3px;
+      --paper-tag-margin: 3px;
     }
     
     paper-input {
@@ -68,13 +32,13 @@ style this element.
     }
     
     paper-tags {
-      max-width: 80;
+      max-width: 80%;
     }
     
-    paper-tags[readonly]{
+    paper-tags[readonly] {
       opacity: 0.6;
     }
-
+    
     paper-badge {
       display: inline-block;
       position: inherit;
@@ -83,16 +47,15 @@ style this element.
     .paper-tags-counter {
       display: inline-block;
     }
-
     </style>
-    <paper-input on-keydown="_keyDown" readonly$="[[readonly]]"  placeholder$="[[placeholder]]" label="[[label]]" bind-value="{{value}}" maxlength$="[[maxlength]]" minlength$="[[minlength]]" invalid="{{invalid}}">
+    <paper-input id="tagInput" always-float-label on-keydown="_keyDown" readonly$="[[readonly]]" placeholder$="[[placeholder]]" disabled$="[[disabled]]" invalid="[[invalid]]" label="[[label]]" bind-value="{{value}}" maxlength$="[[maxlength]]" error-message="[[errorMessage]]" minlength$="[[minlength]]" invalid="{{invalid}}">
       <content select="[prefix]" prefix></content>
-      <paper-tags id="paper-tags" readonly$="[[readonly]]" tags="{{tags}}" icon="[[icon]]" item-class="[[itemClass]]" tag-tpl="[[tagTpl]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" is-removable="[[isRemovable]]" prefix></paper-tags>
+      <paper-tags id="paperTags" readonly$="[[readonly]]" items="{{items}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" is-removable="[[isRemovable]]" prefix></paper-tags>
       <content select="[suffix]" suffix></content>
     </paper-input>
     <template is="dom-if" if="{{showCounter}}">
       <div class="paper-tags-counter">
-        <paper-badge class="paper-tags-badge" label="[[tags.length]]"></paper-badge> [[showCounter]]
+        <paper-badge class="paper-tags-badge" label="[[items.length]]"></paper-badge> [[showCounter]]
       </div>
     </template>
   </template>
@@ -101,63 +64,120 @@ style this element.
 Polymer({
   is: 'paper-tags-input',
 
+  behaviors: [
+    Polymer.PaperTagsBehavior
+  ],
+
   properties: {
+    /*
+     * `isRemovable` indicates whether paper-tags-items can be removed or not. When true, a `close icon` is added to the tag
+     */
     isRemovable: {
-      type:Boolean,
+      type: Boolean,
       value: true
     },
-    showCounter: String,
-    itemClass: String,
-    icon: String,
-    keyAccessor: {
-      type: String,
-      value: 'id'
-    },
-    classAccessor: String,
-    iconAccessor: String,
-    labelAccessor: String,
-    tagTpl: Object,
-    tags: {
+
+    /**
+     * `items` the Array of tags
+     */
+    items: {
       type: Array,
       notify: true
+    },
+    /**
+     * `showCounter` display a paper-badge with `showCounter` as textContent
+     */
+    showCounter: String,
+
+    /**
+     * `maxTags` The maximum allowed number of tags (yet to be implemented)
+     */
+    maxTags: Number,
+
+    /**
+     * `minTags` The minimum allowed number of tags (yet to be implemented)
+     */
+    minTags: Number,
+
+    /**
+     * `tagTpl` a template Object used when creating new tags. If not defuned, new tags will jus be Strings
+     */
+    tagTpl: Object,
+
+    /**
+     * The `value` for this input. If you're using PaperInputBehavior to implement your own paper-input-like element, bind this to the <input is="iron-input">'s bindValue property, or the value property of your input that is notify:true.
+     */
+    value: String,
+
+    /**
+     * `allowAdd` determines if new tags are allowed on pressing `Enter` or not.
+     */
+    allowAdd: {
+      type: Boolean,
+      value: true
     }
   },
+  observers: [
+    '_observeTagItems(items.splices)'
+  ],
 
   behaviors: [
     Polymer.PaperInputBehavior,
+    Polymer.PaperTagsBehavior
   ],
 
+  _observeTagItems: function() {
+    var a = [];
+    this._isUpdatingingItems = true;
+    this.items.forEach(function(item) {
+      var id = item[this.idAccessor] || item;
+      a.push(id + '');
+    }, this);
+
+    if (!this._isUpdatingValueArray) {
+      this.set('valueArray', a);
+    }
+    delete this._isUpdatingingItems;
+  },
+
   _removeLast: function() {
-    this.tags.pop();
-    this.tags = this.tags.slice();
+    this.items.pop();
+    this.items = this.items.slice();
   },
 
-  _getInputValue: function(inputvalue) {
-    return inputvalue.trim();
-  },
-
-  _checkExist: function() {
-    if (typeof(this.tags) == 'undefined') {
-      this.tags = [];
+  findTag: function(id) {
+    if (this.items.length && id) {
+      var ret;
+      if (this.idAccessor) {
+        ret = this.items.filter(function(item) {
+          return item[this.idAccessor] === id;
+        }, this)[0];
+      }
+      return ret || this.items[id * 1];
     }
   },
 
   _addTag: function(tag) {
-    this._checkExist();
+    // this._checkExist();
     if (this.tagTpl) {
       var id = tag;
       tag = JSON.parse(JSON.stringify(this.tagTpl));
-      tag[this.keyAccessor] = id;
+      tag[this.idAccessor] = id + '';
+      if (this.labelAccessor) {
+        tag[this.labelAccessor] = id;
+      };
     }
-    this.push('tags', tag);
+    this.push('items', tag);
   },
 
   _keyDown: function(event) {
     var keyVal = event.which;
-    if (keyVal === 13) {
-      var tag = this._getInputValue(event.target.value);
-      this._checkExist();
-      if ((tag !== '') && (this.tags.indexOf(tag) < 0)) {
+    if (keyVal === 13 && this.allowAdd) {
+      var tag = event.target.value.trim();
+      var obj = this.findTag(tag);
+      // this._checkExist();
+      // if ((tag !== '') && (this.items.indexOf(tag) < 0)) {
+      if (!obj) {
         this._addTag(tag);
         event.target.value = '';
       }
@@ -166,7 +186,13 @@ Polymer({
         this._removeLast();
       }
     }
-  }
+  },
+  /**
+   * Returns a reference to the focusable element.
+   */
+  get _focusableElement() {
+    return this.$.tagInput.inputElement;
+  },
 
 });
 </script>

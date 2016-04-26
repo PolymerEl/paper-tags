@@ -13,12 +13,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="paper-tags-behavior.html">
 <!-- 
-An element providing a solution to no problem in particular.
+An element for setting  displaying a single tag
 
 Example:
-
-  <paper-tags></paper-tags>
+  
+    <paper-tags>dd</paper-tags>
 
 ### Styling
 
@@ -26,10 +27,16 @@ The following custom properties and mixins are available for styling:
 
 Custom property | Description | Default
 ----------------|-------------|----------
-`--paper-tags-color` | colors for tags and tags labels | `--default-primary-color`
-`--paper-tags-container` | Mixin applied to the container | `{}`
+`--paper-tags` | Mixin applied to the host | `{}`
+`--paper-tags-item` | Mixin applied to the .paper-tag-item | `{}`
+`--paper-tag-margin` | margin between tags | `3px`
+`--paper-tag-focus-color` | the tag border color | `--default-primary-color`
+`--paper-tag-text-color` | the tag text color | `--secondary-text-color`
 
 
+@group Paper Elements
+@element paper-input
+@hero hero.svg
 @demo demo/index.html
 -->
 <dom-module id="paper-tags">
@@ -38,46 +45,42 @@ Custom property | Description | Default
     display: block;
     @apply(--paper-font-common-base);
     @apply(--paper-tags);
-
   }
   
   div.paper-tag-item {
     margin-bottom: var(--paper-tag-margin, 3px);
-    border: 1px solid var(--paper-input-container-focus-color, --default-primary-color);
+    border: 1px solid var(--paper-tag-focus-color, --default-primary-color);
     font-size: 13px;
-    color: var(--paper-tag-item-color, --secondary-text-color);
+    color: var(--paper-tag-text-color, --secondary-text-color);
     border-radius: 4px;
-
     @apply(--paper-tag-item);
   }
   
   .paper-tag-item:last-of-type {
-    margin-right:  var(--paper-tag-margin, 3px);
-
+    margin-right: var(--paper-tag-margin, 3px);
   }
-
+  
   paper-icon-button {
-    color: var(--paper-input-container-focus-color, --default-primary-color);
+    color: var(--paper-tag-focus-color, --default-primary-color);
     width: 20px;
     height: 20px;
     padding: 0;
   }
-
+  
   .paper-tag-item-label {
-    padding : var(--paper-tag-margin, 3px);
+    padding: var(--paper-tag-margin, 3px);
   }
   
   .paper-tag-item {
     display: inline-block;
   }
-  
   </style>
   <template>
-    <template is="dom-repeat" items="[[tags]]">
-      <div class$="paper-tag-item [[_computeClass(item)]]">
-        <span class="paper-tag-item-label">[[_computeLabel(item)]]</span>
-        <paper-icon-button icon="icons:close" hidden="[[!isRemovable]]" on-tap="_removeTag"></paper-icon-button>
-        <paper-icon-button icon="[[_computeIcon(item)]]" hidden="[[isRemovable]]"></paper-icon-button>
+    <template is="dom-repeat" id="tagRepeat" items="[[items]]">
+      <div class$="paper-tag-item [[_computeClass(item, classAccessor)]]">
+        <span class="paper-tag-item-label">[[_computeLabel(item, labelAccessor)]]</span>
+        <paper-icon-button icon="icons:close" hidden$="[[!isTagRemovable]]" on-tap="_removeTag"></paper-icon-button>
+        <paper-icon-button icon="[[_computeIcon(item, iconAccessor)]]" hidden$="[[isTagRemovable]]"></paper-icon-button>
       </div>
     </template>
   </template>
@@ -88,64 +91,52 @@ Polymer({
   is: 'paper-tags',
 
   properties: {
-    isRemovable: {
-      type: Boolean,
-      value: true
-    },
-    readonly: Boolean,
-    itemClass: String,
-    icon: String,
-    classAccessor: {
-      type: String,
-      value: 'class'
-    },
-    iconAccessor: {
-      type: String,
-      value: 'icon'
-    },
-    labelAccessor: {
-      type: String,
-      value: 'label'
-    },
-    tagTpl: Object,
-    tags: {
+    
+    /**
+     * `readOnly`prevents tags to be removed
+     */
+    readOnly: Boolean,
+    
+    /**
+     * `items` the Array of tags
+     */
+    items: {
       type: Array,
       notify: true,
-      value:[]
-      // value: ['1', '2', '4']
+      value: function() {
+        return [];
+      }
     }
   },
 
-  _computeIcon: function(item) {
-    if (this.tagTpl && this.iconAccessor) {
-      return item[this.iconAccessor];
-    }
-    return this.icon;
+  behaviors: [
+    Polymer.PaperTagsBehavior
+  ],
+
+  _computeIcon: function(item, iconAccessor) {
+    return item[iconAccessor] || this.icon;
   },
 
-  _computeClass: function(item) {
-    if (this.tagTpl && this.classAccessor) {
-      return item[this.classAccessor];
-    }
-    return this.itemClass;
+  _computeClass: function(item, classAccessor) {
+    return item[classAccessor] || this.itemClass;
   },
 
-  _computeLabel: function(item) {
-     if (this.tagTpl && this.labelAccessor) {
-      return item[this.labelAccessor];
-    }
-    return item;
+  _computeLabel: function(item, labelAccessor) {
+    return item[labelAccessor] || item;
   },
 
   _removeTag: function(event) {
-    if(this.readonly) {return;}  
+    event.detail.isRemoved = true;
+    if (this.readOnly) {
+      return;
+    }
     var model = event.model,
-       index = this.tags.indexOf(model.item);
-    
-    if (index > -1 ) {
-      this.splice('tags', index, 1);
+      index = this.items.indexOf(model.item);
+
+    if (index > -1) {
+      this.splice('items', index, 1);
       this.fire('tag-removed', model);
-  }
+    }
   }
 });
 </script>

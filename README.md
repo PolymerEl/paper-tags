@@ -54,3 +54,23 @@ Then, you can run your tests on _all_ of your local browsers via:
 `wct -p` will keep the browsers alive after test runs (refresh to re-run).
 
 `wct test/some-file.html` will test only the files you specify.
+
+
+## TODO
+	- input tags as behavior
+	- tags renamed items ?
+	- listen to iron-select and deselect
+	- fire unselect when close a tag
+	- do not toggle menu when click on close
+	- filter menu when change input
+	- include menu within the component ! 
+	- prevent close menu when tap on input
+	- open menu when input
+	- keep focus on input when click on input
+	- label up when tags 
+	- indicate the menu is filtered
+	- array and object-value
+	- value as a concatenation of arrayValue
+- handle validator correctly (minTags and maxTags)
+- documentation
+- publish to bower
