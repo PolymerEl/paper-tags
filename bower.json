@@ -13,7 +13,11 @@
     "polymer",
     "seed"
   ],
-  "main": ["paper-tags-input.html","paper-tags.html", "paper-tags-dropdown"],
+  "main": [
+    "paper-tags-input.html",
+    "paper-tags.html",
+    "paper-tags-dropdown"
+  ],
   "license": "http://polymer.github.io/LICENSE.txt",
   "homepage": "https://github.com/PolymerEl/paper-tags",
   "ignore": [
@@ -22,10 +26,25 @@
     "/demo/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.0.0"
+    "polymer": "Polymer/polymer#^1.0.0",
+    "paper-input": "^1.1.11",
+    "paper-badge": "^1.1.1",
+    "paper-icon-button": "^1.0.7",
+    "iron-icons": "^1.1.3",
+    "iron-icon": "^1.0.8",
+    "iron-a11y-keys": "^1.0.4",
+    "iron-behaviors": "^1.0.13",
+    "iron-validatable-behavior": "^1.0.5",
+    "paper-item": "^1.2.1",
+    "paper-ripple": "*",
+    "paper-styles": "^1.1.4",
+    "paper-dropdown-menu": "^1.2.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
     "web-component-tester": "*"
+  },
+  "resolutions": {
+    "paper-ripple": "^1.0.0"
   }
 }
