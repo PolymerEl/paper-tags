@@ -5,7 +5,7 @@
 
 Series of elements for handling tags with Polymer and custom elements: 
 
-- [paper-tags.html](#paper-tags.html)
+- paper-tags.html
 - paper-tags-input.html
 - paper-tags-dropDown.html
 
