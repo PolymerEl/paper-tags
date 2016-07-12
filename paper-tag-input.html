@@ -16,7 +16,7 @@ An element for settings tags tags, based on paper-input
 
 ### Example: 
 
-    <paper-tags-input label="input label" show-counter="tags" items='["hello", "new"]'  maxLength="10"></paper-tags-input>
+    <paper-tag-input label="input label" show-counter="tags" items='["hello", "new"]'  maxLength="10"></paper-tag-input>
 
 ### Styling
 
@@ -26,10 +26,10 @@ Custom property | Description | Default
 ----------------|-------------|----------
 `--paper-tag-margin`   | bottom margin for tags | 3px        
 
-@element paper-tags-input
+@element paper-tag-input
 @demo demo/index.html
 -->
-<dom-module id="paper-tags-input">
+<dom-module id="paper-tag-input">
   <template>
     <style>
     :host {
@@ -74,7 +74,7 @@ Custom property | Description | Default
 </dom-module>
 <script>
 Polymer({
-  is: 'paper-tags-input',
+  is: 'paper-tag-input',
 
   behaviors: [
     Polymer.PaperTagsBehavior
