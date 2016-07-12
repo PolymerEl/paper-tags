@@ -212,7 +212,8 @@ Custom property | Description | Default
         verticalAlign: {
           type: String,
           value: 'top'
-        }
+        },
+        source: Object
       },
 
       listeners: {
@@ -313,17 +314,25 @@ Custom property | Description | Default
         for (var i = 48; i <= 126; i++) {
           s += String.fromCharCode(i) + ' ';
         }
+        //adding backspace
+        s += 'bs' + ' ';
         return s;
       },
 
       _computeFilter: function(string) {
+        var me = this;
         if (!string) {
           // set filter to null to disable filtering
           return null;
+        } else if (me.source) {
+          setTimeout(me.source(me.searchString, function(items) {
+            me.items = items;
+            me.open();
+          }), 500);
         } else {
           // return a filter function for the current search string
           string = string.toLowerCase();
-          var labelAccessor = this.labelAccessor;
+          var labelAccessor = me.labelAccessor;
           return function(item) {
             return item[labelAccessor].toLowerCase().indexOf(string) > -1;
           };
