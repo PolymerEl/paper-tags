@@ -327,6 +327,7 @@ Custom property | Description | Default
         } else if (me.source) {
           setTimeout(me.source(me.searchString, function(items) {
             me.items = items;
+            me.close();
             me.open();
           }), 500);
         } else {
