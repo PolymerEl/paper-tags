@@ -1,6 +1,6 @@
 {
   "name": "paper-tags",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "authors": [
     "christophe.geiser <christophe.geiser@e-smile.org>"
   ],
@@ -45,8 +45,5 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
     "web-component-tester": "*"
-  },
-  "resolutions": {
-    "paper-ripple": "^1.0.0"
   }
 }
