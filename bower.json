@@ -36,7 +36,7 @@
     "iron-behaviors": "^1.0.13",
     "iron-validatable-behavior": "^1.0.5",
     "paper-item": "^1.2.1",
-    "paper-ripple": "*",
+    "paper-ripple": "^1.0.0",
     "paper-styles": "^1.1.4",
     "paper-dropdown-menu": "^1.2.1",
     "iron-demo-helpers": "^1.0.0",
