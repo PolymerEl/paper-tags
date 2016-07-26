@@ -313,21 +313,18 @@ Custom property | Description | Default
         for (var i = 48; i <= 126; i++) {
           s += String.fromCharCode(i) + ' ';
         }
+        //adding backspace
+        s += 'backspace' + ' ';
         return s;
       },
 
       _computeFilter: function(string) {
-        if (!string) {
-          // set filter to null to disable filtering
-          return null;
-        } else {
-          // return a filter function for the current search string
-          string = string.toLowerCase();
-          var labelAccessor = this.labelAccessor;
-          return function(item) {
-            return item[labelAccessor].toLowerCase().indexOf(string) > -1;
-          };
-        }
+        // return a filter function for the current search string
+        string = string.toLowerCase();
+        var labelAccessor = this.labelAccessor;
+        return function(item) {
+          return item[labelAccessor].toLowerCase().indexOf(string) > -1;
+        };
       },
 
       /**
