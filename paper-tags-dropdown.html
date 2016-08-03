@@ -48,36 +48,41 @@ Custom property | Description | Default
 @element paper-tags-dropdown
 @demo demo/index.html
 -->
-<dom-module id="paper-tags-dropdown"> <template>
-<style include="paper-dropdown-menu-shared-styles">
-:host: {
-	display: block;
-}
-
-#filterCt {
-	color: var(- -default-primary-color);
-	padding: 2px 8;
-}
-</style>
-<!-- this div fulfills an a11y requirement for combobox, do not remove -->
-<div role="button"></div>
-<paper-menu-button id="menuButton" vertical-align="[[verticalAlign]]" horizontal-align="[[horizontalAlign]]" vertical-offset="[[_computeMenuVerticalOffset(noLabelFloat)]]" disabled="[[disabled]]"
-    no-animations="[[noAnimations]]" __on-iron-select="_onSelectionChange" __on-iron-deselect="_onSelectionChange" opened="{{opened}}">
-<div class="dropdown-trigger">
-    <paper-ripple></paper-ripple>
-    <!-- paper-input has type="text" for a11y, do not remove -->
-    <iron-a11y-keys id="a11y" target="[[keyTarget]]" keys="[[_computeKeys()]]" on-keys-pressed="_onAscii"></iron-a11y-keys>
-    <paper-tag-input max-tags="[[maxTags]]" is-tag-removable="[[isTagRemovable]]" min-tags="[[minTags]]" id="tagInput" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tag-tpl]]"
-        items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]"
-        id-accessor="[[idAccessor]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]"
-        show-counter="[[showCounter]]"> <iron-icon icon="paper-dropdown-menu:arrow-drop-down" suffix></iron-icon> </paper-tag-input>
-</div>
-<paper-menu class="dropdown-content" selected-values="{{valueArray}}" attr-for-selected="name" multi>
-<div id="filterCt" hidden$="[[!searchString]]">
-    <span>filter: {{searchString}}</span>
-</div>
-<template is="dom-repeat" items="{{items}}" filter="{{_computeFilter(searchString)}}"> <paper-item name="[[_computeItemValue(item, idAccessor)]]">[[_computeItemLabel(item,
-labelAccessor)]]</paper-item> </template> </paper-menu> <content id="content" select=".dropdown-content"></content> </paper-menu-button> </template> <script>
+<dom-module id="paper-tags-dropdown">
+  <template>
+    <style include="paper-dropdown-menu-shared-styles">
+    :host: {
+      display: block;
+    }
+    
+    #filterCt {
+      color: var(--default-primary-color);
+      padding: 2px 8;
+    }
+    </style>
+    <!-- this div fulfills an a11y requirement for combobox, do not remove -->
+    <div role="button"></div>
+    <paper-menu-button id="menuButton" vertical-align="[[verticalAlign]]" horizontal-align="[[horizontalAlign]]" vertical-offset="[[_computeMenuVerticalOffset(noLabelFloat)]]" disabled="[[disabled]]" no-animations="[[noAnimations]]" __on-iron-select="_onSelectionChange" __on-iron-deselect="_onSelectionChange" opened="{{opened}}">
+      <div class="dropdown-trigger">
+        <paper-ripple></paper-ripple>
+        <!-- paper-input has type="text" for a11y, do not remove -->
+        <iron-a11y-keys id="a11y" target="[[keyTarget]]" keys="[[_computeKeys()]]" on-keys-pressed="_onAscii"></iron-a11y-keys>
+        <paper-tag-input max-tags="[[maxTags]]" is-tag-removable="[[isTagRemovable]]" min-tags="[[minTags]]" id="tagInput" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tag-tpl]]" items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" id-accessor="[[idAccessor]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]" show-counter="[[showCounter]]">
+          <iron-icon icon="paper-dropdown-menu:arrow-drop-down" suffix></iron-icon>
+        </paper-tags-input>
+      </div>
+      <paper-menu class="dropdown-content" selected-values="{{valueArray}}" attr-for-selected="name" multi>
+        <div id="filterCt" hidden$="[[!searchString]]">
+          <span>filter:  {{searchString}}</span>
+        </div>
+        <template is="dom-repeat" items="{{items}}" filter="{{_computeFilter(searchString)}}">
+          <paper-item name="[[_computeItemValue(item, idAccessor)]]">[[_computeItemLabel(item, labelAccessor)]]</paper-item>
+        </template>
+      </paper-menu>
+      <content id="content" select=".dropdown-content"></content>
+    </paper-menu-button>
+  </template>
+  <script>
   (function() {
     'use strict';
 
@@ -311,16 +316,13 @@ labelAccessor)]]</paper-item> </template> </paper-menu> <content id="content" se
           s += String.fromCharCode(i) + ' ';
         }
         //adding backspace
-        s += 'bs' + ' ';
+        s += 'backspace' + ' ';
         return s;
       },
 
       _computeFilter: function(string) {
         var me = this;
-        if (!string) {
-          // set filter to null to disable filtering
-          return null;
-        } else if (me.source) {
+        if (me.source) {
           setTimeout(me.source(me.searchString, function(items) {
             me.items = items;
             me.close();
@@ -413,9 +415,8 @@ labelAccessor)]]</paper-item> </template> </paper-menu> <content id="content" se
           e.setAttribute('aria-expanded', openState);
         }
       } ,
-      
-      
-      arrayUnique: function arrayUnique(array,array2) {
+
+      arrayUnique: function(array,array2) {
         if(!array)
           return array2; 
         var a = array.concat(array2);
@@ -426,7 +427,7 @@ labelAccessor)]]</paper-item> </template> </paper-menu> <content id="content" se
             }
         }
         return a;
-    }
+      }
     });
   })();
   </script> </dom-module>
