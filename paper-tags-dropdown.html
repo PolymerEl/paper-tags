@@ -71,7 +71,7 @@ Custom property | Description | Default
           <iron-icon icon="paper-dropdown-menu:arrow-drop-down" suffix></iron-icon>
         </paper-tags-input>
       </div>
-      <paper-menu class="dropdown-content" selected-values="{{valueArray}}" attr-for-selected="name" multi>
+      <paper-menu id="dropdown" class="dropdown-content" selected-values="{{valueArray}}" attr-for-selected="name" multi>
         <div id="filterCt" hidden$="[[!searchString]]">
           <span>filter:  {{searchString}}</span>
         </div>
@@ -320,14 +320,23 @@ Custom property | Description | Default
         return s;
       },
 
+      _update: function() {
+        var me = this;
+        me.source(me.searchString, function(items) {
+          me.open();
+          me.items = items;
+          me.async(function() {
+            me.$.tagInput.querySelector('paper-input').focus();
+          }, 100);
+        });
+      },
+
       _computeFilter: function(string) {
         var me = this;
         if (me.source) {
-          setTimeout(me.source(me.searchString, function(items) {
-            me.items = items;
-            me.close();
-            me.open();
-          }), 500);
+          this.debounce('update', function () {
+            me._update();
+          }, 500);
         } else {
           // return a filter function for the current search string
           string = string.toLowerCase();
@@ -344,13 +353,17 @@ Custom property | Description | Default
        * @param {CustomEvent} event A tap event.
        */
       _onTap: function(event) {
-        if (Polymer.Gestures.findOriginalTarget(event) === this) {
-          this.open();
-        }
+        //if (Polymer.Gestures.findOriginalTarget(event) === this) {
+          if (this.source) {
+            this._update();
+          } else {
+            this.open();
+          }
+        //}
       },
 
       _onTagTap: function(e) {
-        if (e.detail.isRemoved || (e.srcElement.localName === 'input')) {
+        if (e.detail.isRemoved/*  || (e.srcElement.localName === 'input') */) {
           e.stopPropagation();
         }
       },
