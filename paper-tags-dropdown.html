@@ -244,6 +244,9 @@ Custom property | Description | Default
         if ((this._isUpdatingValueArray < 2) && this.items) {
           var o = {};
           var idAccessor = this.idAccessor;
+          if(!this.valueArray) {
+            this.valueArray = [];
+          }
           this.valueArray.forEach(function(item) {
             o[item] = true;
           });

@@ -32,7 +32,10 @@ Polymer.ValueArrayFirebaseBehavior = {
      */
     valueArray: {
       type: Array,
-      notify: true
+      notify: true, 
+      value: function() {
+        return [];
+      }
     },
     
     /**
@@ -57,6 +60,9 @@ Polymer.ValueArrayFirebaseBehavior = {
     if (!this._isUpdatingValueObject) {
       var o = {};
       var idAccessor = this.idAccessor;
+      if(!this.valueArray) {
+            this.valueArray = [];
+          }
       this.valueArray.forEach(function(item) {
         o[item] = true;
       });
