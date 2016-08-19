@@ -69,13 +69,13 @@ Custom property | Description | Default
         <iron-a11y-keys id="a11y" target="[[keyTarget]]" keys="[[_computeKeys()]]" on-keys-pressed="_onAscii"></iron-a11y-keys>
         <paper-tag-input max-tags="[[maxTags]]" is-tag-removable="[[isTagRemovable]]" min-tags="[[minTags]]" id="tagInput" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tag-tpl]]" items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" id-accessor="[[idAccessor]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]" show-counter="[[showCounter]]">
           <iron-icon icon="paper-dropdown-menu:arrow-drop-down" suffix></iron-icon>
-        </paper-tags-input>
+        </paper-tag-input>
       </div>
       <paper-menu id="dropdown" class="dropdown-content" selected-values="{{valueArray}}" attr-for-selected="name" multi>
         <div id="filterCt" hidden$="[[!searchString]]">
           <span>filter:  {{searchString}}</span>
         </div>
-        <template is="dom-repeat" items="{{items}}" filter="{{_computeFilter(searchString)}}">
+        <template is="dom-repeat" items="{{items}}" filter="{{_debounceFilter(searchString)}}">
           <paper-item name="[[_computeItemValue(item, idAccessor)]]">[[_computeItemLabel(item, labelAccessor)]]</paper-item>
         </template>
       </paper-menu>
@@ -323,7 +323,6 @@ Custom property | Description | Default
       _update: function() {
         var me = this;
         me.source(me.searchString, function(items) {
-          me.open();
           me.items = items;
           me.async(function() {
             me.$.tagInput.querySelector('paper-input').focus();
@@ -331,12 +330,19 @@ Custom property | Description | Default
         });
       },
 
+      _debounceFilter: function(string) {
+        var me = this;
+        this.debounce('update', function () {
+          me._computeFilter(string);
+        }, 500);
+      },
       _computeFilter: function(string) {
         var me = this;
         if (me.source) {
-          this.debounce('update', function () {
-            me._update();
-          }, 500);
+          me._update();
+          me.async(function() {
+            me.open();
+          }, 100);
         } else {
           // return a filter function for the current search string
           string = string.toLowerCase();
@@ -354,16 +360,17 @@ Custom property | Description | Default
        */
       _onTap: function(event) {
         //if (Polymer.Gestures.findOriginalTarget(event) === this) {
-          if (this.source) {
-            this._update();
-          } else {
-            this.open();
-          }
+        if (this.source) {
+          this._update();
+        }
+        this.async(function() {
+          this.open();
+        }, 100);
         //}
       },
 
       _onTagTap: function(e) {
-        if (e.detail.isRemoved/*  || (e.srcElement.localName === 'input') */) {
+        if (e.detail.isRemoved || (e.srcElement.localName === 'input')) {
           e.stopPropagation();
         }
       },
