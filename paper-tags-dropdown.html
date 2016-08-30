@@ -242,21 +242,31 @@ Custom property | Description | Default
       _isUpdatingValueArray: 0,
       _observeValueArray: function() {
         this._isUpdatingValueArray++;
-        if ((this._isUpdatingValueArray < 2) && this.items) {
+        var setValue = function(items) {
           var o = {};
+          if (items && items.length) {
+            this.items = items;
+          }
           var idAccessor = this.idAccessor;
           this.valueArray.forEach(function(item) {
             o[item] = true;
           });
-          var tagItems =this.arrayUnique(this.tagItems,this.items.filter(function(item) {
-            return this.valueArray.indexOf((item[this.idAccessor || item]) + '') > -1;
+          var tagItems = this.arrayUnique(this.tagItems,this.items.filter(function(item) {
+            return this.valueArray.indexOf((item[this.idAccessor || item])) > -1;
           }, this));
           this.set('tagItems', tagItems);
           if (!this._isUpdatingValueObject) {
             this.set('valueObject', o);
           }
           this._setValueJoin(this.valueArray.join(', '));
+        };
+        if (!this.items && this.source) {
+          this.source('', setValue.bind(this));
         }
+        if ((this._isUpdatingValueArray < 2) && this.items) {
+          setValue.call(this);
+        }
+        
         this._isUpdatingValueArray--;
       },
 
