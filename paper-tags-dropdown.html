@@ -252,7 +252,7 @@ Custom property | Description | Default
             o[item] = true;
           });
           var tagItems = this.arrayUnique(this.tagItems,this.items.filter(function(item) {
-            return this.valueArray.indexOf((item[this.idAccessor || item])) > -1;
+            return this.valueArray.indexOf((item[this.idAccessor || item]) + '') > -1;
           }, this));
           this.set('tagItems', tagItems);
           if (!this._isUpdatingValueObject) {
@@ -351,7 +351,9 @@ Custom property | Description | Default
         if (me.source) {
           me._update();
           me.async(function() {
-            me.open();
+            if (me.$.tagInput.querySelector('paper-input').hasAttribute('focused')) {
+              me.open();  
+            }
           }, 100);
         } else {
           // return a filter function for the current search string
