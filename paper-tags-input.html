@@ -76,10 +76,6 @@ Custom property | Description | Default
 Polymer({
   is: 'paper-tags-input',
 
-  behaviors: [
-    Polymer.PaperTagsBehavior
-  ],
-
   properties: {
     /*
      * `isRemovable` indicates whether paper-tags-items can be removed or not. When true, a `close icon` is added to the tag
@@ -177,7 +173,7 @@ Polymer({
       tag[this.idAccessor] = id + '';
       if (this.labelAccessor) {
         tag[this.labelAccessor] = id;
-      };
+      }
     }
     this.push('items', tag);
   },
@@ -192,6 +188,7 @@ Polymer({
       if (!obj) {
         this._addTag(tag);
         event.target.value = '';
+        this.fire('tag-added', tag);
       }
     } else {
       if ((keyVal === 8) && (event.target.value === '')) {
