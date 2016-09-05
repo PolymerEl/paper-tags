@@ -243,10 +243,16 @@ Custom property | Description | Default
         this._isUpdatingValueArray++;
         if ((this._isUpdatingValueArray < 2) && this.items) {
           var o = {};
-          var idAccessor = this.idAccessor;
-          if(!this.valueArray) {
-            this.valueArray = [];
+          if (!this.valueArray || !this.valueArray.length) {
+             this.set('tagItems', []);
+            if (!this._isUpdatingValueObject) {
+              this.set('valueObject', null);
+            }
+            this._setValueJoin('');
+            this._isUpdatingValueArray--;
+            return;
           }
+
           this.valueArray.forEach(function(item) {
             o[item] = true;
           });
@@ -308,7 +314,18 @@ Custom property | Description | Default
       },
 
       _computeItemLabel: function(item, labelAccessor) {
-        return item[labelAccessor] || item;
+        var parts = Polymer.Base._getPathParts(labelAccessor);
+        if (parts.length === 1) {
+          return item[labelAccessor] || item;
+        }
+        var label = item;
+        parts.forEach(function(p) {
+          if (label) {
+            label = label[p];
+          }
+        });
+        return label;
+
       },
 
       _computeKeys: function() {
@@ -324,10 +341,24 @@ Custom property | Description | Default
       _computeFilter: function(string) {
         // return a filter function for the current search string
         string = string.toLowerCase();
+        var me = this;
         var labelAccessor = this.labelAccessor;
+        var parts = Polymer.Base._getPathParts(labelAccessor);
+        if (parts.length === 1) {
+          return function(item) {
+            return item[labelAccessor].toLowerCase().indexOf(string) > -1;
+          };
+        }
         return function(item) {
-          return item[labelAccessor].toLowerCase().indexOf(string) > -1;
+          var label = item;
+          parts.forEach(function(p) {
+            if (label) {
+              label = label[p];
+            }
+          });
+          return label &&  label.toLowerCase().indexOf(string) > -1;
         };
+
       },
 
       /**
