@@ -54,7 +54,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <demo-snippet class="centered-demo">
       <template>
         <template id="tagDropdown" is="dom-bind">
-          <paper-tags-dropdown items="{{items}}" noink label="label dropdown"  value-object='{"5": "true"}' ></paper-tags-dropdown>
+          <paper-tags-dropdown items="{{items}}" noink label="label dropdown" value-array="{{values}}"></paper-tags-dropdown>
         </template>
       </template>
     </demo-snippet>
@@ -84,7 +84,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       desc: 'description 4',
       label: 'Bar'
     }];
-    tagDropdown.set('items', data)
+    tagDropdown.set('items', data);
+    tagDropdown.set('values', [1, 12345]);
   });
   </script>
 </body>

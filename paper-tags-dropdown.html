@@ -22,7 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../paper-styles/default-theme.html">
 <link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu-icons.html">
 <link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu-shared-styles.html">
-<link rel="import" href="paper-tag-input.html">
+<link rel="import" href="paper-tags-input.html">
 <link rel="import" href="paper-tags-behavior.html">
 <!--
 
@@ -67,11 +67,11 @@ Custom property | Description | Default
         <paper-ripple></paper-ripple>
         <!-- paper-input has type="text" for a11y, do not remove -->
         <iron-a11y-keys id="a11y" target="[[keyTarget]]" keys="[[_computeKeys()]]" on-keys-pressed="_onAscii"></iron-a11y-keys>
-        <paper-tag-input max-tags="[[maxTags]]" is-tag-removable="[[isTagRemovable]]" min-tags="[[minTags]]" id="tagInput" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tag-tpl]]" items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" id-accessor="[[idAccessor]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]" show-counter="[[showCounter]]">
+        <paper-tags-input max-tags="[[maxTags]]" is-tag-removable="[[isTagRemovable]]" min-tags="[[minTags]]" id="tagInput" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tag-tpl]]" items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" id-accessor="[[idAccessor]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]" show-counter="[[showCounter]]">
           <iron-icon icon="paper-dropdown-menu:arrow-drop-down" suffix></iron-icon>
-        </paper-tag-input>
+        </paper-tags-input>
       </div>
-      <paper-menu id="dropdown" class="dropdown-content" selected-values="{{valueArray}}" attr-for-selected="name" multi>
+      <paper-menu class="dropdown-content" selected-values="{{valueArray}}" attr-for-selected="name" multi>
         <div id="filterCt" hidden$="[[!searchString]]">
           <span>filter:  {{searchString}}</span>
         </div>
@@ -462,4 +462,5 @@ Custom property | Description | Default
       }
     });
   })();
-  </script> </dom-module>
+  </script>
+</dom-module>
