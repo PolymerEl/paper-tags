@@ -16,6 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <title>paper-tags Demo</title>
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../iron-ajax/iron-ajax.html">
   <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
   <link rel="import" href="../../paper-item/paper-item.html">
@@ -59,7 +60,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
     </demo-snippet>
   </div>
- 
+  <div class="vertical-section-container centered">
+    <h4>paper-tags-dropdown-remote</h4>
+    <demo-snippet class="centered-demo">
+      <template>
+        <template id="tagDropdownRemote" is="dom-bind">
+          <iron-ajax id="users" url="http://jsonplaceholder.typicode.com/users" handle-as="json"></iron-ajax>
+          <paper-tags-dropdown source="{{ _getList }}" noink label="label dropdown" id-accessor="id" label-accessor="username" value-array="{{values}}" allow-add></paper-tags-dropdown>
+        </template>
+      </template>
+    </demo-snippet>
+  </div>
+
   <script>
   window.addEventListener('WebComponentsReady', function() {
     tagDropdown = document.querySelector('#tagDropdown');
@@ -75,19 +87,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       id: '12345',
       desc: 'description 4',
       label: 'new items'
-        }, {
+    }, {
       id: '5',
       desc: 'description 4',
       label: 'Hello'
-        }, {
+    }, {
       id: 6,
       desc: 'description 4',
       label: 'Bar'
     }];
     tagDropdown.set('items', data);
     tagDropdown.set('values', [1, 12345]);
+
+    tagDropdownRemote = document.querySelector('#tagDropdownRemote');
+
+    tagDropdownRemote._getList = function(value, callBack) {
+    var suggestions = [];
+    tagDropdownRemote.$.users.addEventListener('response', function(e) {
+      var filtered = e.detail.response.filter(function(r) {
+        return r.username.indexOf(value) > -1;
+      });
+      callBack(filtered);
+    });
+    tagDropdownRemote.$.users.generateRequest();
+  };
   });
+ 
+  
   </script>
 </body>
-
 </html>

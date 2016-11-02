@@ -67,7 +67,7 @@ Custom property | Description | Default
         <paper-ripple></paper-ripple>
         <!-- paper-input has type="text" for a11y, do not remove -->
         <iron-a11y-keys id="a11y" target="[[keyTarget]]" keys="[[_computeKeys()]]" on-keys-pressed="_onAscii"></iron-a11y-keys>
-        <paper-tags-input max-tags="[[maxTags]]" is-tag-removable="[[isTagRemovable]]" min-tags="[[minTags]]" id="tagInput" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tag-tpl]]" items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" id-accessor="[[idAccessor]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]" show-counter="[[showCounter]]">
+        <paper-tags-input max-tags="[[maxTags]]" is-tag-removable="[[isTagRemovable]]" min-tags="[[minTags]]" id="tagInput" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tag-tpl]]" items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" id-accessor="[[idAccessor]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]" show-counter="[[showCounter]]" allow-add="[[allowAdd]]">
           <iron-icon icon="paper-dropdown-menu:arrow-drop-down" suffix></iron-icon>
         </paper-tags-input>
       </div>
@@ -78,7 +78,6 @@ Custom property | Description | Default
         <template is="dom-repeat" items="{{items}}" filter="{{_debounceFilter(searchString)}}">
           <paper-item name="[[_computeItemValue(item, idAccessor)]]">[[_computeItemLabel(item, labelAccessor)]]</paper-item>
         </template>
-      </paper-menu>
       <content id="content" select=".dropdown-content"></content>
     </paper-menu-button>
   </template>
@@ -217,6 +216,11 @@ Custom property | Description | Default
         valueArray: {
           type: Array,
           value: []
+        },
+        allowAdd: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
         }
       },
 
@@ -276,7 +280,7 @@ Custom property | Description | Default
 
       ready: function() {
         this.$.menuButton.ignoreSelect = true;
-        this.$.tagInput.allowAdd = false;
+        this.$.tagInput.allowAdd = this.allowAdd;
         if (this.valueObject && !this.valueArray) {
           this.set('valueArray', Object.keys(this.valueObject));
         }
