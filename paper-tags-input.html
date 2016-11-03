@@ -180,6 +180,7 @@ Polymer({
       };
     }
     this.push('items', tag);
+    this.fire('add-new-tag', {tag: tag});
   },
 
   _keyDown: function(event) {

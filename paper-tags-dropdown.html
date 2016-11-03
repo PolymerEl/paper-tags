@@ -67,7 +67,7 @@ Custom property | Description | Default
         <paper-ripple></paper-ripple>
         <!-- paper-input has type="text" for a11y, do not remove -->
         <iron-a11y-keys id="a11y" target="[[keyTarget]]" keys="[[_computeKeys()]]" on-keys-pressed="_onAscii"></iron-a11y-keys>
-        <paper-tags-input max-tags="[[maxTags]]" is-tag-removable="[[isTagRemovable]]" min-tags="[[minTags]]" id="tagInput" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tag-tpl]]" items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" id-accessor="[[idAccessor]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]" show-counter="[[showCounter]]" allow-add="[[allowAdd]]">
+        <paper-tags-input max-tags="[[maxTags]]" is-tag-removable="[[isTagRemovable]]" min-tags="[[minTags]]" id="tagInput" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tag-tpl]]" items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" id-accessor="[[idAccessor]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]" show-counter="[[showCounter]]" allow-add="[[allowAdd]]" on-add-new-tag="_onNewTagAdd">
           <iron-icon icon="paper-dropdown-menu:arrow-drop-down" suffix></iron-icon>
         </paper-tags-input>
       </div>
@@ -371,6 +371,9 @@ Custom property | Description | Default
             return item[labelAccessor].toLowerCase().indexOf(string) > -1;
           };
         }
+      },
+      _onNewTagAdd: function() {
+        this.set('searchString', '');
       },
 
       /**
