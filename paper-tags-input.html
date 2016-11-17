@@ -76,10 +76,6 @@ Custom property | Description | Default
 Polymer({
   is: 'paper-tags-input',
 
-  behaviors: [
-    Polymer.PaperTagsBehavior
-  ],
-
   properties: {
     /*
      * `isRemovable` indicates whether paper-tags-items can be removed or not. When true, a `close icon` is added to the tag
@@ -143,7 +139,7 @@ Polymer({
     this._isUpdatingingItems = true;
     this.items.forEach(function(item) {
       var id = item[this.idAccessor] || item;
-      a.push(id + '');
+      a.push(id);
     }, this);
 
     if (!this._isUpdatingValueArray) {
@@ -153,8 +149,9 @@ Polymer({
   },
 
   _removeLast: function() {
-    this.items.pop();
+    var last = this.items.pop();
     this.items = this.items.slice();
+    this.fire('tag-removed', last);
   },
 
   findTag: function(id) {
@@ -174,13 +171,13 @@ Polymer({
     if (this.tagTpl) {
       var id = tag;
       tag = JSON.parse(JSON.stringify(this.tagTpl));
-      tag[this.idAccessor] = id + '';
+      tag[this.idAccessor] = id;
       if (this.labelAccessor) {
         tag[this.labelAccessor] = id;
-      };
+      }
     }
     this.push('items', tag);
-    this.fire('add-new-tag', {tag: tag});
+    this.fire('tag-added', tag);
   },
 
   _keyDown: function(event) {

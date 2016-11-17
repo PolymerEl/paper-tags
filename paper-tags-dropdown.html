@@ -67,7 +67,7 @@ Custom property | Description | Default
         <paper-ripple></paper-ripple>
         <!-- paper-input has type="text" for a11y, do not remove -->
         <iron-a11y-keys id="a11y" target="[[keyTarget]]" keys="[[_computeKeys()]]" on-keys-pressed="_onAscii"></iron-a11y-keys>
-        <paper-tags-input max-tags="[[maxTags]]" is-tag-removable="[[isTagRemovable]]" min-tags="[[minTags]]" id="tagInput" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tag-tpl]]" items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" id-accessor="[[idAccessor]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]" show-counter="[[showCounter]]" allow-add="[[allowAdd]]" on-add-new-tag="_onNewTagAdd">
+        <paper-tags-input max-tags="[[maxTags]]" is-tag-removable="[[isTagRemovable]]" min-tags="[[minTags]]" id="tagInput" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tag-tpl]]" items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" id-accessor="[[idAccessor]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]" show-counter="[[showCounter]]" allow-add="[[allowAdd]]" on-tag-added="_onNewTagAdd">
           <iron-icon icon="paper-dropdown-menu:arrow-drop-down" suffix></iron-icon>
         </paper-tags-input>
       </div>
@@ -78,6 +78,7 @@ Custom property | Description | Default
         <template is="dom-repeat" items="{{items}}" filter="{{_debounceFilter(searchString)}}">
           <paper-item name="[[_computeItemValue(item, idAccessor)]]">[[_computeItemLabel(item, labelAccessor)]]</paper-item>
         </template>
+      </paper-menu>
       <content id="content" select=".dropdown-content"></content>
     </paper-menu-button>
   </template>
@@ -260,7 +261,7 @@ Custom property | Description | Default
             o[item] = true;
           });
           var tagItems = this.arrayUnique(this.tagItems,this.items.filter(function(item) {
-            return this.valueArray.indexOf((item[this.idAccessor || item]) + '') > -1;
+            return this.valueArray.indexOf((item[this.idAccessor] || item)) > -1;
           }, this));
           this.set('tagItems', tagItems);
           if (!this._isUpdatingValueObject) {
@@ -321,11 +322,22 @@ Custom property | Description | Default
       },
 
       _computeItemValue: function(item, idAccessor) {
-        return (item[idAccessor] || item) + '';
+        return (item[idAccessor] || item);
       },
 
       _computeItemLabel: function(item, labelAccessor) {
-        return item[labelAccessor] || item;
+        var parts = Polymer.Base._getPathParts(labelAccessor);
+        if (parts.length === 1) {
+          return item[labelAccessor] || item;
+        }
+        var label = item;
+        parts.forEach(function(p) {
+          if (label) {
+            label = label[p];
+          }
+        });
+        return label;
+
       },
 
       _computeKeys: function() {
