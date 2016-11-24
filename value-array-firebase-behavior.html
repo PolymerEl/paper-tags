@@ -32,9 +32,12 @@ Polymer.ValueArrayFirebaseBehavior = {
      */
     valueArray: {
       type: Array,
-      notify: true
+      notify: true,
+      value: function() {
+        return [];
+      }
     },
-    
+
     /**
      * `valueJoin` joins values in a string
      */
@@ -57,6 +60,13 @@ Polymer.ValueArrayFirebaseBehavior = {
     if (!this._isUpdatingValueObject) {
       var o = {};
       var idAccessor = this.idAccessor;
+      if (!this.valueArray || !this.valueArray.length) {
+        this.set('valueObject', null);
+        this._setValueJoin('');
+        delete this._isUpdatingValueArray;
+        return;
+      }
+
       this.valueArray.forEach(function(item) {
         o[item] = true;
       });
@@ -65,16 +75,16 @@ Polymer.ValueArrayFirebaseBehavior = {
     }
     delete this._isUpdatingValueArray;
   },
-  
+
   /**
    * `_observeValueObject` ensures valueArray and valueObject are in sync
    */
   _observeValueObject: function() {
     this._isUpdatingValueObject = true;
     if (!this._isUpdatingValueArray) {
-      this.set('valueArray', Object.keys(this.valueObject).filter(function(item) {
+      this.set('valueArray', this.valueObject ? Object.keys(this.valueObject).filter(function(item) {
         return !!item;
-      }));
+      }) : null);
     }
     delete this._isUpdatingValueObject;
   }
