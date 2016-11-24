@@ -250,6 +250,9 @@ Custom property | Description | Default
       },
       _isUpdatingValueArray: 0,
       _observeValueArray: function() {
+        if (this.valueArray === undefined) {
+          this.set('valueArray', []);
+        }
         this._isUpdatingValueArray++;
         var setValue = function(items) {
           var o = {};
@@ -460,7 +463,7 @@ Custom property | Description | Default
        * and the element has a valid selection.
        */
       _getValidity: function(_value) {
-        return this.disabled || !this.required || (this.required && !!this.value);
+        return this.disabled || !this.required || (this.required && (!!this.tagItems && this.tagItems.length > 0));
       },
 
       _openedChanged: function() {
