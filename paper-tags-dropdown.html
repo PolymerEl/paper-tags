@@ -75,7 +75,7 @@ Custom property | Description | Default
         <div id="filterCt" hidden$="[[!searchString]]">
           <span>filter:  {{searchString}}</span>
         </div>
-        <template is="dom-repeat" items="{{items}}" filter="{{_debounceFilter(searchString)}}">
+        <template is="dom-repeat" items="{{items}}" filter="{{_computeFilter(searchString)}}">
           <paper-item name="[[_computeItemValue(item, idAccessor)]]">[[_computeItemLabel(item, labelAccessor)]]</paper-item>
         </template>
       </paper-menu>
@@ -314,6 +314,7 @@ Custom property | Description | Default
        * Show the dropdown content.
        */
       open: function() {
+        console.log('opened');
         this.$.menuButton.open();
       },
 
@@ -321,6 +322,7 @@ Custom property | Description | Default
        * Hide the dropdown content.
        */
       close: function() {
+        console.log('closed');
         this.$.menuButton.close();
       },
 
@@ -353,13 +355,14 @@ Custom property | Description | Default
         return s;
       },
 
-      _update: function() {
+      _update: function(callBack) {
         var me = this;
         me.source(me.searchString, function(items) {
           me.items = items;
-          me.async(function() {
+          me.open();
+          me.async(function() {           
             me.$.tagInput.querySelector('paper-input').focus();
-          }, 100);
+          }, 200);
         });
       },
 
@@ -371,20 +374,16 @@ Custom property | Description | Default
       },
       _computeFilter: function(string) {
         var me = this;
-        if (me.source) {
-          me._update();
-          me.async(function() {
-            if (me.$.tagInput.querySelector('paper-input').hasAttribute('focused')) {
-              me.open();  
-            }
-          }, 100);
-        } else {
+        if (!me.source) {
           // return a filter function for the current search string
           string = string.toLowerCase();
           var labelAccessor = me.labelAccessor;
           return function(item) {
-            return item[labelAccessor].toLowerCase().indexOf(string) > -1;
+            return (item[labelAccessor] || item).toLowerCase().indexOf(string) > -1;
           };
+        } else {
+          me.close();
+          me._update();
         }
       },
       _onNewTagAdd: function() {
@@ -400,10 +399,10 @@ Custom property | Description | Default
         //if (Polymer.Gestures.findOriginalTarget(event) === this) {
         if (this.source) {
           this._update();
-        }
+        }/*
         this.async(function() {
           this.open();
-        }, 100);
+        }, 200);*/
         //}
       },
 
