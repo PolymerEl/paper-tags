@@ -75,7 +75,7 @@ Custom property | Description | Default
         <div id="filterCt" hidden$="[[!searchString]]">
           <span>filter:  {{searchString}}</span>
         </div>
-        <template is="dom-repeat" items="{{items}}" filter="{{_debounceFilter(searchString)}}">
+        <template is="dom-repeat" items="{{items}}" filter="{{_computeFilter(searchString)}}">
           <paper-item name="[[_computeItemValue(item, idAccessor)]]">[[_computeItemLabel(item, labelAccessor)]]</paper-item>
         </template>
       </paper-menu>
@@ -357,34 +357,24 @@ Custom property | Description | Default
         var me = this;
         me.source(me.searchString, function(items) {
           me.items = items;
-          me.async(function() {
+          me.open();
+          me.async(function() {           
             me.$.tagInput.querySelector('paper-input').focus();
-          }, 100);
+          }, 200);
         });
       },
 
-      _debounceFilter: function(string) {
-        var me = this;
-        this.debounce('update', function () {
-          me._computeFilter(string);
-        }, 500);
-      },
       _computeFilter: function(string) {
         var me = this;
-        if (me.source) {
-          me._update();
-          me.async(function() {
-            if (me.$.tagInput.querySelector('paper-input').hasAttribute('focused')) {
-              me.open();  
-            }
-          }, 100);
-        } else {
+        if (!me.source) {
           // return a filter function for the current search string
           string = string.toLowerCase();
           var labelAccessor = me.labelAccessor;
           return function(item) {
-            return item[labelAccessor].toLowerCase().indexOf(string) > -1;
+            return (item[labelAccessor] || item).toLowerCase().indexOf(string) > -1;
           };
+        } else {
+          me._update();
         }
       },
       _onNewTagAdd: function() {
@@ -401,10 +391,6 @@ Custom property | Description | Default
         if (this.source) {
           this._update();
         }
-        this.async(function() {
-          this.open();
-        }, 100);
-        //}
       },
 
       _onTagTap: function(e) {
