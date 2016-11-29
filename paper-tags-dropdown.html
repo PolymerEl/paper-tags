@@ -314,7 +314,6 @@ Custom property | Description | Default
        * Show the dropdown content.
        */
       open: function() {
-        console.log('opened');
         this.$.menuButton.open();
       },
 
@@ -322,7 +321,6 @@ Custom property | Description | Default
        * Hide the dropdown content.
        */
       close: function() {
-        console.log('closed');
         this.$.menuButton.close();
       },
 
@@ -355,7 +353,7 @@ Custom property | Description | Default
         return s;
       },
 
-      _update: function(callBack) {
+      _update: function() {
         var me = this;
         me.source(me.searchString, function(items) {
           me.items = items;
@@ -366,12 +364,6 @@ Custom property | Description | Default
         });
       },
 
-      _debounceFilter: function(string) {
-        var me = this;
-        this.debounce('update', function () {
-          me._computeFilter(string);
-        }, 500);
-      },
       _computeFilter: function(string) {
         var me = this;
         if (!me.source) {
@@ -382,7 +374,6 @@ Custom property | Description | Default
             return (item[labelAccessor] || item).toLowerCase().indexOf(string) > -1;
           };
         } else {
-          me.close();
           me._update();
         }
       },
@@ -399,11 +390,7 @@ Custom property | Description | Default
         //if (Polymer.Gestures.findOriginalTarget(event) === this) {
         if (this.source) {
           this._update();
-        }/*
-        this.async(function() {
-          this.open();
-        }, 200);*/
-        //}
+        }
       },
 
       _onTagTap: function(e) {
