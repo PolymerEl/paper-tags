@@ -4,12 +4,11 @@
 
 Series of elements for handling tags with Polymer and custom elements:
 
-`<paper-tags>` - just the tags 
-`<paper-tags-input>` - input element for entering tags
-`<paper-tags-dropdown>` - dropdown-elements for selecting tags in a dropdown-list
+- `<paper-tags>` - just the tags 
+- `<paper-tags-input>` - input element for entering tags
+- `<paper-tags-dropdown>` - dropdown-elements for selecting tags in a dropdown-list
 
 
-```
 Example Usage:
 
 <!--
