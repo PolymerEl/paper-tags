@@ -2,9 +2,10 @@
 All notable changes to pre-ignition will be documented in this file.
 Started the changeLog from v1.0.4 only !
 
-## [1.0.7] - 2017-01-09
+## [1.0.9] - 2017-01-09
 - [x] modified README
 - [x] added LICENSE
+- [x] added taper-tags-import.html
 
 ## [1.0.6] - 2016-09-05
 - [x] Add events (tag-added, tag-removed) when manually adding/removing tags
