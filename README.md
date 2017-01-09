@@ -8,6 +8,9 @@ Series of elements for handling tags with Polymer and custom elements:
 - `<paper-tags-input>` - input element for entering tags
 - `<paper-tags-dropdown>` - dropdown-elements for selecting tags in a dropdown-list
 
+<div>
+	<img src="https://raw.githubusercontent.com/PolymerEl/paper-tags/master/images/paper-tags.png" width="600"></img>
+</div>
 
 Example Usage:
 
