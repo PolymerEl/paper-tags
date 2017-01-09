@@ -28,7 +28,7 @@ Example Usage:
 -->
 ```html
 <paper-tags-input label="input label" show-counter="tags" items='["hello", "new"]'  maxLength="10"></paper-tags-input>
-<paper-tags-dropdown items='"[{"id":1,"desc":"description 1","label":"Title 1"},{"id":"12345","desc":"description 4","label":"new items"},{"id":"5","desc":"description 4","label":"Hello"},{"id":6,"desc":"description 4","label":"Bar"}]"' noink label="label dropdown"  value-object='{"5": "true"}' ></paper-tags-dropdown>
+<paper-tags-dropdown items='[{"id":1,"desc":"description 1","label":"Title 1"},{"id":"12345","desc":"description 4","label":"new items"},{"id":"5","desc":"description 4","label":"Hello"},{"id":6,"desc":"description 4","label":"Bar"}]' noink label="label dropdown"  value-object='{"5": "true"}' ></paper-tags-dropdown>
 
 
 ```
