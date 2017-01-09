@@ -346,7 +346,7 @@ Custom property | Description | Default
         var parts = Polymer.Base._getPathParts(labelAccessor);
         if (parts.length === 1) {
           return function(item) {
-            return item[labelAccessor].toLowerCase().indexOf(string) > -1;
+            return item[labelAccessor] && item[labelAccessor].toLowerCase().indexOf(string) > -1;
           };
         }
         return function(item) {
