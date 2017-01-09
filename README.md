@@ -18,7 +18,6 @@ Example Usage:
     <link rel="import" href="paper-tags.html">
   	<link rel="import" href="paper-tags-input.html">
   	<link rel="import" href="paper-tags-dropdown.html">
-    
     <next-code-block></next-code-block>
   </template>
 </custom-element-demo>
