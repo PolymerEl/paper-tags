@@ -45,6 +45,12 @@ Custom property | Description | Default
 `--paper-dropdown-menu-input` | A mixin that is applied to the internal paper input | `{}`
 `--paper-dropdown-menu-icon` | A mixin that is applied to the internal icon | `{}`
 
+
+<paper-menu> can be styled by --paper-tags-dropdown-menu mixin
+
+Custom property | Description | Default
+--paper-menu | A mixin that is applied to the internal paper-menu | `{}`
+
 @element paper-tags-dropdown
 @demo demo/index.html
 -->
@@ -59,6 +65,13 @@ Custom property | Description | Default
       color: var(--default-primary-color);
       padding: 2px 8;
     }
+
+    paper-menu {
+      min-width: 150px;
+      
+      @apply(--paper-menu);
+    }
+
     </style>
     <!-- this div fulfills an a11y requirement for combobox, do not remove -->
     <div role="button"></div>

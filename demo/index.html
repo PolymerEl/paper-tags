@@ -25,7 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="../paper-tags-dropdown.html">
   <link rel="import" href="../../hydrolysis/hydrolysis.html">
   <style is="custom-style" include="demo-pages-shared-styles">
-
+     
   </style>
 </head>
 
@@ -52,8 +52,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <div class="vertical-section-container centered">
     <h4>paper-tags-dropdown</h4>
     <demo-snippet class="centered-demo">
+     
       <template>
         <template id="tagDropdown" is="dom-bind">
+          <style is="custom-style">
+            paper-tags-dropdown {
+              --paper-menu: {
+                width: 200px;
+                }
+              }
+          </style>
           <paper-tags-dropdown items="{{items}}" noink label="label dropdown"  value-object='{"5": "true"}' ></paper-tags-dropdown>
         </template>
       </template>
