@@ -134,6 +134,7 @@ Polymer({
 
     if (index > -1) {
       this.splice('items', index, 1);
+      this.items = this.items.slice();
       this.fire('tag-removed', model);
     }
   }
