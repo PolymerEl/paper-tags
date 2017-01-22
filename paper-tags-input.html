@@ -154,20 +154,11 @@ Polymer({
     this.fire('tag-removed', last);
   },
 
-  findTag: function(id) {
-    if (this.items.length && id) {
-      var ret;
-      if (this.idAccessor) {
-        ret = this.items.filter(function(item) {
-          return item[this.idAccessor] === id;
-        }, this)[0];
-      }
-      return ret || this.items[id * 1];
-    }
+  findTag: function(tag) {
+    return this.items.includes(tag);
   },
 
   _addTag: function(tag) {
-    // this._checkExist();
     if (this.tagTpl) {
       var id = tag;
       tag = JSON.parse(JSON.stringify(this.tagTpl));
@@ -185,10 +176,7 @@ Polymer({
     var keyVal = event.which;
     if (keyVal === 13 && this.allowAdd) {
       var tag = event.target.value.trim();
-      var obj = this.findTag(tag);
-      // this._checkExist();
-      // if ((tag !== '') && (this.items.indexOf(tag) < 0)) {
-      if (!obj) {
+      if (!this.findTag(tag)) {
         this._addTag(tag);
         event.target.value = '';
       }
