@@ -92,9 +92,9 @@ Polymer({
   properties: {
     
     /**
-     * `readOnly`prevents tags to be removed
+     * `readonly`prevents tags to be removed
      */
-    readOnly: Boolean,
+    readonly: Boolean,
     
     /**
      * `items` the Array of tags
@@ -126,7 +126,7 @@ Polymer({
 
   _removeTag: function(event) {
     event.detail.isRemoved = true;
-    if (this.readOnly) {
+    if (this.readonly) {
       return;
     }
     var model = event.model,
