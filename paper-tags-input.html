@@ -168,6 +168,9 @@ Polymer({
 
   _addTag: function(tag) {
     // this._checkExist();
+    if (tag.length < 1) {
+      return;
+    }
     if (this.tagTpl) {
       var id = tag;
       tag = JSON.parse(JSON.stringify(this.tagTpl));

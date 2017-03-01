@@ -371,7 +371,7 @@ Custom property | Description | Default
           string = string.toLowerCase();
           var labelAccessor = me.labelAccessor;
           return function(item) {
-            return (item[labelAccessor] || item).toLowerCase().indexOf(string) > -1;
+            return (typeof item[labelAccessor] === 'string' ? item[labelAccessor] : item).toLowerCase().indexOf(string) > -1;
           };
         } else {
           me._update();
