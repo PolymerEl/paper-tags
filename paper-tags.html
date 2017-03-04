@@ -82,8 +82,8 @@ Custom property | Description | Default
     <template is="dom-repeat" id="tagRepeat" items="[[items]]">
       <div class$="paper-tag-item [[_computeClass(item, classAccessor)]]">
         <span class="paper-tag-item-label">[[_computeLabel(item, labelAccessor)]]</span>
-        <paper-icon-button icon="icons:close" hidden$="[[!isTagRemovable]]" on-tap="_removeTag"></paper-icon-button>
-        <paper-icon-button icon="[[_computeIcon(item, iconAccessor)]]" hidden$="[[isTagRemovable]]"></paper-icon-button>
+        <paper-icon-button icon="icons:close" hidden$="[[preventRemoveTag]]" on-tap="_removeTag"></paper-icon-button>
+        <paper-icon-button icon="[[_computeIcon(item, iconAccessor)]]" hidden$="[[!preventRemoveTag]]"></paper-icon-button>
       </div>
     </template>
   </template>
@@ -92,6 +92,10 @@ Custom property | Description | Default
 Polymer({
 
   is: 'paper-tags',
+
+  behaviors: [
+    Polymer.PaperTagsBehavior
+  ],
 
   properties: {
     
@@ -111,10 +115,6 @@ Polymer({
       }
     }
   },
-
-  behaviors: [
-    Polymer.PaperTagsBehavior
-  ],
 
   _computeIcon: function(item, iconAccessor) {
     return item[iconAccessor] || this.icon;
