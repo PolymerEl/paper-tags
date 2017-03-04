@@ -14,7 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!--
 An element for settings tags tags, based on paper-input
 
-### Example: 
+### Example:
 
     <paper-tags-input label="input label" show-counter="tags" items='["hello", "new"]'  maxLength="10"></paper-tags-input>
 
@@ -24,7 +24,7 @@ The following custom properties and mixins are available for styling:
 
 Custom property | Description | Default
 ----------------|-------------|----------
-`--paper-tag-margin`   | bottom margin for tags | 3px        
+`--paper-tag-margin`   | bottom margin for tags | 3px
 
 @element paper-tags-input
 @demo demo/index.html
@@ -36,31 +36,31 @@ Custom property | Description | Default
       display: block;
       --paper-tag-margin: 3px;
     }
-    
+
     paper-input {
       --paper-input-container-input: {
         margin-bottom: var(--paper-tag-margin);
       }
     }
-    
+
     paper-tags {
       max-width: 80%;
     }
-    
+
     paper-tags[readonly] {
       opacity: 0.6;
     }
-    
+
     paper-badge {
       display: inline-block;
       position: inherit;
     }
-    
+
     .paper-tags-counter {
       display: inline-block;
     }
     </style>
-    <paper-input id="tagInput" always-float-label on-keydown="_keyDown" readonly$="[[readonly]]" placeholder$="[[placeholder]]" disabled$="[[disabled]]" invalid="[[invalid]]" label="[[label]]" bind-value="{{value}}" maxlength$="[[maxlength]]" error-message="[[errorMessage]]" minlength$="[[minlength]]" invalid="{{invalid}}">
+    <paper-input id="tagInput" always-float-label on-keydown="_keyDown" readonly$="[[readonly]]" placeholder$="[[placeholder]]" disabled$="[[disabled]]" invalid="[[invalid]]" label="[[label]]" value="{{value}}" maxlength$="[[maxlength]]" error-message="[[errorMessage]]" minlength$="[[minlength]]" invalid="{{invalid}}">
       <content select="[prefix]" prefix></content>
       <paper-tags id="paperTags" readonly$="[[readonly]]" items="{{items}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" prevent-remove-tag="[[preventRemoveTag]]" prefix></paper-tags>
       <content select="[suffix]" suffix></content>
@@ -78,7 +78,7 @@ Polymer({
 
   properties: {
     /**
-     * `preventRemoveTag` hide the `close` icon and prevent removing a tag when true. 
+     * `preventRemoveTag` hide the `close` icon and prevent removing a tag when true.
      */
     preventRemoveTag: {
       type: Boolean,
