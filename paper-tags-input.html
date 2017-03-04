@@ -113,9 +113,12 @@ Polymer({
     tagTpl: Object,
 
     /**
-     * The `value` for this input. If you're using PaperInputBehavior to implement your own paper-input-like element, bind this to the <input is="iron-input">'s bindValue property, or the value property of your input that is notify:true.
+     * `value` the underlying paper-input value
      */
-    value: String,
+    value: {
+      type: String,
+      notify: true
+    },
 
     /**
      * `allowAdd` determines if new tags are allowed on pressing `Enter` or not.
@@ -130,7 +133,6 @@ Polymer({
   ],
 
   behaviors: [
-    Polymer.PaperInputBehavior,
     Polymer.PaperTagsBehavior
   ],
 
