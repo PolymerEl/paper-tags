@@ -25,7 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="../paper-tags-dropdown.html">
   <link rel="import" href="../../hydrolysis/hydrolysis.html">
   <style is="custom-style" include="demo-pages-shared-styles">
-     
+
   </style>
 </head>
 
@@ -43,8 +43,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <demo-snippet class="centered-demo">
       <template>
         <template is="dom-bind">
-         <paper-tags-input label="input label" show-counter="tags" items='["hello", "new"]' value-join="{{valueJoin}}" maxLength="10"></paper-tags-input>
-          <div>value: {{valueJoin}}</div>
+          <paper-tags-input label="input label" show-counter="tags" items='["hello", "new"]' value="{{value}}" value-join="{{valueJoin}}" maxLength="10"></paper-tags-input>
+          <div>
+            <div>value: {{valueJoin}}</div>
+            <div>input value: {{value}}</div>
+          </div>
         </template>
       </template>
     </demo-snippet>
@@ -52,7 +55,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <div class="vertical-section-container centered">
     <h4>paper-tags-dropdown</h4>
     <demo-snippet class="centered-demo">
-     
+
       <template>
         <template id="tagDropdown" is="dom-bind">
           <style is="custom-style">
@@ -67,9 +70,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
     </demo-snippet>
   </div>
- 
+
   <script>
+
   window.addEventListener('WebComponentsReady', function() {
+
     tagDropdown = document.querySelector('#tagDropdown');
     // app.listenSelect = function(e) {
     //   console.info('Listed', e);
@@ -78,7 +83,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       id: 1,
       desc: 'description 1',
       label: 'Title 1'
-   
+
     }, {
       id: '12345',
       desc: 'description 4',
