@@ -93,6 +93,13 @@ Polymer({
       notify: true
     },
     /**
+     * `delimiter` defaults to comma (,)
+     */
+    delimiter: {
+      type: String,
+      value: ","
+    },
+    /**
      * `showCounter` display a paper-badge with `showCounter` as textContent
      */
     showCounter: String,
@@ -177,15 +184,15 @@ Polymer({
   _keyDown: function(event) {
     var keyVal = event.which;
     if (keyVal === 13 && this.allowAdd) {
-      var tag = event.target.value.trim();
-      if (!this.findTag(tag)) {
-        this._addTag(tag);
-        event.target.value = '';
+      var tags = event.target.value.split(this.delimiter);
+      for (var tag of tags) {
+        if (!this.findTag(tag)) {
+          this._addTag(tag);
+          event.target.value = '';
+        }
       }
-    } else {
-      if ((keyVal === 8) && (event.target.value === '')) {
-        this._removeLast();
-      }
+    } else if (keyVal === 8 && event.target.value === '') {
+      this._removeLast();
     }
   },
   /**
