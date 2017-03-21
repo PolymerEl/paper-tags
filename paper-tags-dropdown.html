@@ -14,7 +14,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../iron-behaviors/iron-control-state.html">
 <link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
-<link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../paper-item/paper-item.html">
@@ -93,7 +92,6 @@ Custom property | Description | Default
         Polymer.IronButtonState,
         Polymer.IronControlState,
         Polymer.IronFormElementBehavior,
-        Polymer.IronValidatableBehavior,
         Polymer.PaperTagsBehavior
       ],
 
@@ -400,7 +398,6 @@ Custom property | Description | Default
       },
 
       _onAscii: function(event) {
-        this.open();
         this.async(function() {
           this.set('searchString', this.$.tagInput.value)
         }, 30);
