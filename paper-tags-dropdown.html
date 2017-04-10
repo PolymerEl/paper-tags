@@ -75,7 +75,7 @@ Custom property | Description | Default
           <span>filter:  {{searchString}}</span>
         </div>
         <template is="dom-repeat" items="{{items}}" filter="{{_computeFilter(searchString)}}">
-          <paper-item name="[[_computeItemValue(item, idAccessor)]]">[[_computeItemLabel(item, labelAccessor)]]</paper-item>
+          <paper-item name="[[_computeItemValue(item, idAccessor)]]" on-tap="_onNewTagAdd">[[_computeItemLabel(item, labelAccessor)]]</paper-item>
         </template>
       </paper-menu>
       <content id="content" select=".dropdown-content"></content>
@@ -377,6 +377,7 @@ Custom property | Description | Default
       },
       _onNewTagAdd: function() {
         this.set('searchString', '');
+        this.$.tagInput.$.tagInput.value = '';
       },
 
       /**
