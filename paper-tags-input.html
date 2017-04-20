@@ -97,7 +97,7 @@ Polymer({
      */
     delimiter: {
       type: String,
-      value: ","
+      value: ','
     },
     /**
      * `showCounter` display a paper-badge with `showCounter` as textContent
@@ -185,12 +185,15 @@ Polymer({
     var keyVal = event.which;
     if (keyVal === 13 && this.allowAdd) {
       var tags = event.target.value.split(this.delimiter);
-      for (var tag of tags) {
-        if (!this.findTag(tag)) {
-          this._addTag(tag);
+      var me = this; 
+      
+      tags.forEach(function(tag)) {
+       if (!me.findTag(tag)) {
+          me._addTag(tag);
           event.target.value = '';
         }
-      }
+      });
+      
     } else if (keyVal === 8 && event.target.value === '') {
       this._removeLast();
     }
