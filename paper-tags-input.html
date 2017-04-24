@@ -187,7 +187,7 @@ Polymer({
       var tags = event.target.value.split(this.delimiter);
       var me = this; 
       
-      tags.forEach(function(tag)) {
+      tags.forEach(function(tag) {
        if (!me.findTag(tag)) {
           me._addTag(tag);
           event.target.value = '';
