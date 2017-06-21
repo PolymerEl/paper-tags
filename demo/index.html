@@ -34,7 +34,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <h4>paper-tags</h4>
     <demo-snippet class="centered-demo">
       <template>
-        <paper-tags tag-tpl_='{"id":null, "label":"hello"}' label-accessor="label" items='[{"id":1, "l" :"me", "label":"hello"},{"id":2, "label":"new"}]'></paper-tags>
+        <paper-tags readonly tag-tpl_='{"id":null, "label":"hello"}' label-accessor="label" items='[{"id":1, "l" :"me", "label":"hello"},{"id":2, "label":"new"}]'></paper-tags>
       </template>
     </demo-snippet>
   </div>
@@ -65,7 +65,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
               }
           </style>
-          <paper-tags-dropdown items="{{items}}" noink label="label dropdown"  value-object='{"5": "true"}' ></paper-tags-dropdown>
+          <paper-tags-dropdown readonly items="{{items}}" noink label="label dropdown"  value-object='{"5": "true"}' ></paper-tags-dropdown>
         </template>
       </template>
     </demo-snippet>

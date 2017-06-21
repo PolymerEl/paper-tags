@@ -81,11 +81,11 @@ Custom property | Description | Default
         <paper-ripple></paper-ripple>
         <!-- paper-input has type="text" for a11y, do not remove -->
         <iron-a11y-keys id="a11y" target="[[keyTarget]]" keys="[[_computeKeys()]]" on-keys-pressed="_onAscii"></iron-a11y-keys>
-        <paper-tags-input max-tags="[[maxTags]]" prevent-remove-tag="[[preventRemoveTag]]" min-tags="[[minTags]]" id="tagInput" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tag-tpl]]" items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" id-accessor="[[idAccessor]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]" show-counter="[[showCounter]]">
+        <paper-tags-input max-tags="[[maxTags]]" prevent-remove-tag="[[preventRemoveTag]]" min-tags="[[minTags]]" id="tagInput" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tagTpl]]" items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" id-accessor="[[idAccessor]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]" show-counter="[[showCounter]]">
           <iron-icon icon="paper-dropdown-menu:arrow-drop-down" suffix></iron-icon>
         </paper-tags-input>
       </div>
-      <paper-menu class="dropdown-content" selected-values="{{valueArray}}" attr-for-selected="name" multi>
+      <paper-menu class="dropdown-content" disabled="[[disabled]]"  selected-values="{{valueArray}}" attr-for-selected="name" multi>
         <div id="filterCt" hidden$="[[!searchString]]">
           <span>filter:  {{searchString}}</span>
         </div>
@@ -126,12 +126,40 @@ Custom property | Description | Default
           type: Array
         },
         /**
-         * `showCounter` 
+         * When true, `showCounter` display a counter counting the number of tags
          */
-        showCounter: String,
-        maxTags: Number,
-        minTags: Number,
-        tagTpl: Object,
+        showCounter: {
+          type: String
+        },
+
+        /* 
+         * `maxTags` the maximum allowed number of tags
+         */
+        maxTags: {
+          type: Number
+        },
+
+        /* 
+         * `minTags` the minimum allowed number of tags
+         */
+        minTags:{
+          type: Number
+        }, 
+
+        /* 
+         * `readonly` - reflects to `disabled` when set to true. 
+         */
+        readonly: {
+          type: Boolean,
+          observer: '_observeReadonly'
+        },
+
+        /**
+         * `tagTpl` a template Object used when creating new tags (e.g. '{"id":null, "label":"hello"}'). If not defuned, new tags will jus be Strings
+         */
+        tagTpl: {
+          type: Object
+        },
 
         keyTarget: {
           type: Object,
@@ -250,9 +278,23 @@ Custom property | Description | Default
       ],
 
       _observeItems: function(splices) {
-        this._observeValueArray()
+        this._observeValueArray();
       },
+
+      _observeReadonly: function(readonly, old) {
+        if(readonly) {
+          this.disabled = true;
+          // remember that disabled property depends on readonly for run-time changes
+          this._disabledFromReadonly = true;
+          return;
+        }
+        if(old && readonly === false && this._disabledFromReadonly) {
+            this.disabled = false;
+        }
+      },
+
       _isUpdatingValueArray: 0,
+
       _observeValueArray: function() {
         this._isUpdatingValueArray++;
         if ((this._isUpdatingValueArray < 2) && this.items) {
