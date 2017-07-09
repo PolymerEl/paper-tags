@@ -32,47 +32,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body>
   <div class="vertical-section-container centered">
     <h4>paper-tags</h4>
-    <demo-snippet class="centered-demo">
+  <!--   <demo-snippet class="centered-demo">
       <template>
         <paper-tags readonly tag-tpl_='{"id":null, "label":"hello"}' label-path="label" items='[{"id":1, "l" :"me", "label":"hello"},{"id":2, "label":"new"}]'></paper-tags>
       </template>
-    </demo-snippet>
+    </demo-snippet> -->
   </div>
   <div class="vertical-section-container centered">
     <h4>paper-tags-input</h4>
-    <demo-snippet class="centered-demo">
+    <!-- <demo-snippet class="centered-demo">
       <template>
-        <template is="dom-bind">
-          <paper-tags-input label="input label" show-counter="tags" items='["hello", "new"]' value="{{value}}" value-join="{{valueJoin}}" maxLength="10"></paper-tags-input>
+        <template  is="dom-bind">
+          <paper-tags-input id="control" label="input label" show-counter="tags" items='["hello", "new"]' value="{{value}}" value-join="{{valueJoin}}" maxLength="10"></paper-tags-input>
           <div>
             <div>value: {{valueJoin}}</div>
             <div>input value: {{value}}</div>
           </div>
         </template>
       </template>
-    </demo-snippet>
+    </demo-snippet> -->
   </div>
   <div class="vertical-section-container centered">
     <h4>paper-tags-dropdown</h4>
     <demo-snippet class="centered-demo">
-
       <template>
-        <template id="tagDropdown" is="dom-bind">
+        <template  id="tagDropdown" is="dom-bind">
           <style is="custom-style">
-            paper-tags-dropdown {
-              --paper-menu: {
-                width: 200px;
-                }
-              }
+          paper-tags-dropdown {
+            --paper-menu: {
+              width: 200px;
+            }
+          }
           </style>
-          <paper-tags-dropdown items="{{items}}" noink label="label dropdown"  value-object='{"5": "true"}' ></paper-tags-dropdown>
+          <paper-tags-dropdown id="control" items="{{items}}" noink label="label dropdown" value-object='{"5": "true"}'></paper-tags-dropdown>
         </template>
       </template>
     </demo-snippet>
   </div>
-
   <script>
-
   window.addEventListener('WebComponentsReady', function() {
 
     tagDropdown = document.querySelector('#tagDropdown');
@@ -88,17 +85,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       id: '12345',
       desc: 'description 4',
       label: 'new items'
-        }, {
+    }, {
       id: '5',
       desc: 'description 4',
       label: 'Hello'
-        }, {
+    }, {
       id: 6,
       desc: 'description 4',
       label: 'Bar'
     }];
-    setTimeout(function(){ tagDropdown.set('items', data) }, 3000);
+    setTimeout(function() {
+      tagDropdown.$.control.set('items', data)
+    }, 100);
     
+    tagDropdown.$.control.addEventListener('tag-removed', function(e) {
+      console.log("tag-removed", e.type);
+    }.bind(this));
+
+    tagDropdown.$.control.addEventListener('tag-added', function(e) {
+      console.log("tag-added", e.type);
+    }.bind(this));
   });
   </script>
 </body>
