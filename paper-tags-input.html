@@ -145,9 +145,7 @@ Polymer({
   ],
 
   _observeTagItemsInit: function(items) {
-    console.log('input init ',items, this);
     if(items && !this.valueArray) {
-      console.log('missing  ',items, this);
       this._observeTagItems(items)
 
     }
@@ -157,7 +155,6 @@ Polymer({
     if(!splices) {
       return
     }
-    console.log('input',splices);
     var keys = [];
     this._isUpdatingingItems = true;
     this.items.forEach(function(item) {

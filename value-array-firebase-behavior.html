@@ -54,7 +54,6 @@ Polymer.ValueArrayFirebaseBehavior = {
   _observeValueArrayInit: function(valueArray) {
     this._isInitiatingValueArray = true;
     if (valueArray && !this._isUpdatingValueObject) {
-      console.log('ARRAY init', valueArray, this.valueObject);
       var o = {};
       this.valueArray.forEach(function(item) {
         o[item] = true;
