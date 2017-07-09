@@ -140,10 +140,23 @@ Polymer({
     }
   },
   observers: [
+    '_observeTagItemsInit(items)',
     '_observeTagItems(items.splices)'
   ],
 
+  _observeTagItemsInit: function(items) {
+    console.log('input init ',items, this);
+    if(items && !this.valueArray) {
+      console.log('missing  ',items, this);
+      this._observeTagItems(items)
+
+    }
+
+  },
   _observeTagItems: function(splices) {
+    if(!splices) {
+      return
+    }
     console.log('input',splices);
     var keys = [];
     this._isUpdatingingItems = true;
@@ -153,16 +166,14 @@ Polymer({
     }, this);
 
     this.syncValueArrayWithKeys(keys)
-    // if (!this._isUpdatingValueArray && !this._isInitiatingValueArray ) {
-    //   this.set('valueArray', a);
-    // }
+
     delete this._isUpdatingingItems;
   },
 
   _removeLast: function() {
     var last = this.items.pop();
     this.items = this.items.slice();
-    this.fire('tag-removed', last);
+    // this.fire('tag-removed', last);
   },
 
   findTag: function(tag) {
@@ -179,7 +190,7 @@ Polymer({
       }
     }
     this.push('items', tag);
-    this.fire('tag-added', tag);
+    // this.fire('tag-added', tag);
   },
 
   _keyDown: function(event) {

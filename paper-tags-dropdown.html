@@ -24,7 +24,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu-icons.html">
 <link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu-shared-styles.html">
 <link rel="import" href="paper-tags-input.html">
-<link rel="import" href="paper-tags-behavior.html">
 <!--
 
 `paper-tag-dropdown` is based on paper-menu-dropdown, with selected item menu displayed as tags.
@@ -106,29 +105,37 @@ Custom property | Description | Default
         Polymer.IronControlState,
         Polymer.IronFormElementBehavior,
         Polymer.IronValidatableBehavior
-        // Polymer.PaperTagsBehavior
       ],
 
       properties: {
 
-            /**
-     * `valueObject` store value as object keys `{"value1": true, "value2": true}`
-     */
-    valueObject: {
-      type: Object,
-      notify: true
-    },
+        /**
+         * `valueObject` store value as object keys `{"value1": true, "value2": true}`
+         */
+        valueObject: {
+          type: Object,
+          notify: true
+        },
 
-    /**
-     * `valueArray` store value as array `["value1", "value2"]`
-     */
-    valueArray: {
-      type: Array,
-      notify: true,
-      // value: function() {
-      //   return [];
-      // }
-    },
+        /**
+         * `valueArray` store value as array `["value1", "value2"]`
+         */
+        valueArray: {
+          type: Array,
+          notify: true,
+        },
+
+        keyPath: {
+          type: String, 
+          value: 'id'
+        },
+
+        labelPath: {
+          type: String, 
+          value: 'label'
+        },
+
+
         searchString: {
           type: String,
           value: ''
@@ -144,6 +151,7 @@ Custom property | Description | Default
         tagItems: {
           type: Array
         },
+        
         /**
          * When true, `showCounter` display a counter counting the number of tags
          */
@@ -293,7 +301,7 @@ Custom property | Description | Default
 
       observers: [
         '_observeItems(items)',
-         '_observeValueArray(valueArray.splices)',
+        '_observeValueArray(valueArray.splices)',
       ],
 
       _observeReadonly: function(readonly, old) {
@@ -310,56 +318,18 @@ Custom property | Description | Default
 
       _observeItems: function(items) {
         // run every time item is set ore reset
-        console.log('dropdown items', items);
         if (items) {
           this._isInitiatingItems = true;
-          if (!this.valueArray || !this.valueArray.length) {
-            this.set('tagItems', []);
-            // if (!this._isUpdatingValueObject) {
-            //   this.set('valueObject', null);
-            // }
-            // this._setValueJoin('');
-            // this._isUpdatingValueArray--;
-            return;
-          }
-
+          this._observeValueArray();
+        
           delete this._isInitiatingItems;
         }
-        // this._observeValueArray(splices);
       },
 
-
-      _isUpdatingValueArray: 0,
-
       _observeValueArray: function(splices) {
-        console.log('dropdown Array', splices);
-        this._isUpdatingValueArray++;
-        if ((this._isUpdatingValueArray < 2) && this.items) {
-          // var o = {};
-          // if (!this.valueArray || !this.valueArray.length) {
-          //    this.set('tagItems', []);
-          //   if (!this._isUpdatingValueObject) {
-          //     this.set('valueObject', null);
-          //   }
-          //   this._setValueJoin('');
-          //   this._isUpdatingValueArray--;
-          //   return;
-          // }
-
-          // this.valueArray.forEach(function(item) {
-          //   o[item] = true;
-          // });
-
           this.set('tagItems', this.items.filter(function(item) {
             return this.valueArray.indexOf((item[this.keyPath || item]) + '') > -1;
           }, this));
-
-          // if (!this._isUpdatingValueObject) {
-          //   this.set('valueObject', o);
-          // }
-          // this._setValueJoin(this.valueArray.join(', '));
-        }
-        this._isUpdatingValueArray--;
       },
 
       ready: function() {
@@ -368,7 +338,6 @@ Custom property | Description | Default
         if (this.valueObject && !this.valueArray) {
           this.set('valueArray', Object.keys(this.valueObject));
         }
-        // this.set('valueObject', this.valueObject);
       },
 
       attached: function() {
@@ -484,25 +453,6 @@ Custom property | Description | Default
         }, 30);
 
       },
-
-      /**
-       * Udate tags items when the selection changes
-       */
-      // _observeSelected: function() {
-      //   this.__isUpdatingSelectedValues = true;
-      //   if (!this.__isUpdatingValueArray) {
-      //     if (this.keyPath) {
-      //       this.set('valueArray', this.items.filter(function(item) {
-      //         return this.selectedValues.indexOf(item[this.keyPath]) > -1;
-      //       }, this));
-      //     } else {
-      //       this.set('valueArray', this.selectedValues.map(function(value) {
-      //         return this.items[value];
-      //       }, this));
-      //     }
-      //   }
-      //   delete this.__isUpdatingSelectedValues;
-      // },
 
       /**
        * Compute the vertical offset of the menu based on the value of
