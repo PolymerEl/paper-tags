@@ -59,7 +59,7 @@ Polymer.ValueArrayFirebaseBehavior = {
     this._isUpdatingValueArray = true;
     if (!this._isUpdatingValueObject) {
       var o = {};
-      // var idAccessor = this.idAccessor;
+      // var keyPath = this.keyPath;
       if (!this.valueArray || !this.valueArray.length) {
         this.set('valueObject', null);
         this._setValueJoin('');

@@ -19,7 +19,7 @@ An element for setting  displaying a single tag
 
 ### Example : 
     
-    <paper-tags label-accessor="label" items='[{"id":1, "l" :"me", "label":"hello"},{"id":2, "label":"new"}]'></paper-tags>
+    <paper-tags label-path="label" items='[{"id":1, "l" :"me", "label":"hello"},{"id":2, "label":"new"}]'></paper-tags>
 
 ### Styling
 
@@ -81,7 +81,7 @@ Custom property | Description | Default
   <template>
     <template is="dom-repeat" id="tagRepeat" items="[[items]]">
       <div class$="paper-tag-item [[_computeClass(item, classAccessor)]]">
-        <span class="paper-tag-item-label">[[_computeLabel(item, labelAccessor)]]</span>
+        <span class="paper-tag-item-label">[[_computeLabel(item, labelPath)]]</span>
         <paper-icon-button icon="icons:close" hidden$="[[preventRemoveTag]]" on-tap="_removeTag"></paper-icon-button>
         <paper-icon-button icon="[[_computeIcon(item, iconAccessor)]]" hidden$="[[!preventRemoveTag]]"></paper-icon-button>
       </div>
@@ -124,22 +124,25 @@ Polymer({
     return item[classAccessor] || this.itemClass;
   },
 
-  _computeLabel: function(item, labelAccessor) {
-    return item[labelAccessor] || item;
+  _computeLabel: function(item, labelPath) {
+    return item[labelPath] || item;
   },
 
   _removeTag: function(event) {
-    event.detail.isRemoved = true;
     if (this.readonly) {
       return;
     }
+    event.detail.isRemoved = true;
     var model = event.model,
       index = this.items.indexOf(model.item);
 
     if (index > -1) {
-      this.splice('items', index, 1);
-      this.items = this.items.slice();
-      this.fire('tag-removed', model);
+      event.stopPropagation();
+      this.debounce('paper-tag-remove-item', function() {
+        this.splice('items', index, 1);
+      }, 10);
+      // this.items = this.items.slice();
+      this.fire('tag-removed', model.item);
     }
   }
 });

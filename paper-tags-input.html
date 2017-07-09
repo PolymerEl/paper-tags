@@ -62,7 +62,7 @@ Custom property | Description | Default
     </style>
     <paper-input id="tagInput" always-float-label on-keydown="_keyDown" readonly$="[[readonly]]" placeholder$="[[placeholder]]" disabled$="[[disabled]]" invalid="[[invalid]]" label="[[label]]" value="{{value}}" maxlength$="[[maxlength]]" error-message="[[errorMessage]]" minlength$="[[minlength]]" invalid="{{invalid}}">
       <content select="[prefix]" prefix></content>
-      <paper-tags id="paperTags" readonly$="[[readonly]]" items="{{items}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" prevent-remove-tag="[[preventRemoveTag]]" prefix></paper-tags>
+      <paper-tags id="paperTags" readonly$="[[readonly]]" items="{{items}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-path="[[labelPath]]" icon-accessor="[[iconAccessor]]" prevent-remove-tag="[[preventRemoveTag]]" prefix></paper-tags>
       <content select="[suffix]" suffix></content>
     </paper-input>
     <template is="dom-if" if="{{showCounter}}">
@@ -147,7 +147,7 @@ Polymer({
     var a = [];
     this._isUpdatingingItems = true;
     this.items.forEach(function(item) {
-      var id = item[this.idAccessor] || item;
+      var id = item[this.keyPath] || item;
       a.push(id + '');
     }, this);
 
@@ -171,9 +171,9 @@ Polymer({
     if (this.tagTpl) {
       var id = tag;
       tag = JSON.parse(JSON.stringify(this.tagTpl));
-      tag[this.idAccessor] = id + '';
-      if (this.labelAccessor) {
-        tag[this.labelAccessor] = id;
+      tag[this.keyPath] = id + '';
+      if (this.labelPath) {
+        tag[this.labelPath] = id;
       }
     }
     this.push('items', tag);
