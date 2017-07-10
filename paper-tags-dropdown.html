@@ -126,12 +126,12 @@ Custom property | Description | Default
         },
 
         keyPath: {
-          type: String, 
+          type: String,
           value: 'id'
         },
 
         labelPath: {
-          type: String, 
+          type: String,
           value: 'label'
         },
 
@@ -151,7 +151,7 @@ Custom property | Description | Default
         tagItems: {
           type: Array
         },
-        
+
         /**
          * When true, `showCounter` display a counter counting the number of tags
          */
@@ -321,15 +321,18 @@ Custom property | Description | Default
         if (items) {
           this._isInitiatingItems = true;
           this._observeValueArray();
-        
+
           delete this._isInitiatingItems;
         }
       },
 
       _observeValueArray: function(splices) {
-          this.set('tagItems', this.items.filter(function(item) {
-            return this.valueArray.indexOf((item[this.keyPath || item]) + '') > -1;
-          }, this));
+        if (!this.valueArray) {
+          return;
+        }
+        this.set('tagItems', this.items.filter(function(item) {
+          return this.valueArray.indexOf((item[this.keyPath || item]) + '') > -1;
+        }, this));
       },
 
       ready: function() {
