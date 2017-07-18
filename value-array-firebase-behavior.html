@@ -42,7 +42,7 @@ Polymer.ValueArrayFirebaseBehavior = {
       type: String,
       notify: true,
       readOnly: true,
-    },
+    }
   },
   observers: [
     '_observeValueObject(valueObject.*)',
@@ -76,7 +76,7 @@ Polymer.ValueArrayFirebaseBehavior = {
     if (!this._isUpdatingValueObject) {
       splices.indexSplices.forEach(function(splice) {
         splice.removed.forEach(function(removed) {
-          this.set('valueObject.' + removed, null); // so that ir is deleted at firebase level
+          this.set('valueObject.' + removed, null); // so that it is deleted at firebase level
           this.fire('tag-removed', removed);
         }, this);
         if (splice.addedCount) {
@@ -89,7 +89,7 @@ Polymer.ValueArrayFirebaseBehavior = {
         }
       }, this);
 
-      this._setValueJoin(this.valueArray.join(', '));
+      this._setValueJoin((this.valueArray || []).join(', '));
     }
     delete this._isUpdatingValueArray;
   },
@@ -97,7 +97,7 @@ Polymer.ValueArrayFirebaseBehavior = {
   /**
    * `_observeValueObject` ensures valueArray and valueObject are in sync
    */
-  _observeValueObject: function(oo) {
+  _observeValueObject: function(obj) {
     this._isUpdatingValueObject = true;
     if (!this._isUpdatingValueArray && !this._isInitiatingValueArray) {
       var keys = Object.keys(this.valueObject).filter(function(item) {
