@@ -69,6 +69,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
     </demo-snippet>
   </div>
+  <div class="vertical-section-container centered">
+	<h4>paper-tags-dropdown string array</h4>
+	<demo-snippet class="centered-demo">
+		<template>
+			<template id="stringArrayTagDropdown" is="dom-bind">
+				<style is="custom-style">
+					paper-tags-dropdown {
+						--paper-menu: {
+							width: 200px;
+						}
+					}
+				</style>
+				<paper-tags-dropdown
+					id="stringControl"
+					items='["Doe", "Rae", "Mee", "Faa", "So", "Laa", "Tee", "Daa"]'
+					label-path="label"
+					noink
+					label="label dropdown"
+					value-array='["Rae"]'>
+				</paper-tags-dropdown>
+			</template>
+		</template>
+	</demo-snippet>
+  </div>
   <script>
   window.addEventListener('WebComponentsReady', function() {
 
@@ -97,7 +121,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     setTimeout(function() {
       tagDropdown.$.control.set('items', data)
     }, 100);
-    
+
     tagDropdown.$.control.addEventListener('tag-removed', function(e, d) {
       console.log("tag-removed", e.detail);
     }.bind(this));
