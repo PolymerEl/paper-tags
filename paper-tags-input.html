@@ -187,6 +187,7 @@ Polymer({
       }
     }
     this.push('items', tag);
+    this.items = this.items.slice();
     // this.fire('tag-added', tag);
   },
 
