@@ -60,12 +60,12 @@ Custom property | Description | Default
     :host: {
       display: block;
     }
-    
+
     #filterCt {
       color: var(--default-primary-color);
       padding: 2px 8;
     }
-    
+
     paper-menu {
       min-width: 150px;
       @apply(--paper-menu);
@@ -114,7 +114,8 @@ Custom property | Description | Default
          */
         valueObject: {
           type: Object,
-          notify: true
+          notify: true,
+		  observer: '_observeValueArray'
         },
 
         /**
@@ -159,22 +160,22 @@ Custom property | Description | Default
           type: String
         },
 
-        /* 
+        /*
          * `maxTags` the maximum allowed number of tags
          */
         maxTags: {
           type: Number
         },
 
-        /* 
+        /*
          * `minTags` the minimum allowed number of tags
          */
         minTags: {
           type: Number
         },
 
-        /* 
-         * `readonly` - reflects to `disabled` when set to true. 
+        /*
+         * `readonly` - reflects to `disabled` when set to true.
          */
         readonly: {
           type: Boolean,
@@ -320,20 +321,31 @@ Custom property | Description | Default
         // run every time item is set ore reset
         if (items) {
           this._isInitiatingItems = true;
-          this._observeValueArray();
+          this.set('tagItems', this._filterValueItems(this.valueArray));
 
           delete this._isInitiatingItems;
         }
       },
 
       _observeValueArray: function(splices) {
-        if (!this.valueArray) {
-          return;
-        }
-        this.set('tagItems', this.items.filter(function(item) {
-          return this.valueArray.indexOf((item[this.keyPath || item]) + '') > -1;
-        }, this));
+		// run on any change to the valueArray
+        this.set('tagItems', this._filterValueItems(this.valueArray));
       },
+
+	  _filterValueItems: function(valueArray) {
+		var filteredVals = [];
+		if (valueArray && this.items && this.items.length > 0) {
+		  filteredVals = this.items.filter(function(item) {
+			var itemKey = this.keyPath;
+			if (item[itemKey]) {
+			  return this.valueArray.indexOf(item[itemKey] + '') > -1;
+			}else {
+			  return this.valueArray.indexOf(item) > -1;
+			}
+		  }, this);
+		}
+		return filteredVals;
+	  },
 
       ready: function() {
         this.$.menuButton.ignoreSelect = true;
