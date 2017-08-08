@@ -62,7 +62,7 @@ Custom property | Description | Default
     </style>
     <paper-input id="tagInput" always-float-label on-keydown="_keyDown" readonly$="[[readonly]]" placeholder$="[[placeholder]]" disabled$="[[disabled]]" invalid="[[invalid]]" label="[[label]]" value="{{value}}" maxlength$="[[maxlength]]" error-message="[[errorMessage]]" minlength$="[[minlength]]" invalid="{{invalid}}">
       <content select="[prefix]" prefix></content>
-      <paper-tags id="paperTags" readonly$="[[readonly]]" items="{{items}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" prevent-remove-tag="[[preventRemoveTag]]" prefix></paper-tags>
+      <paper-tags id="paperTags" readonly$="[[readonly]]" items="{{items}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-path="[[labelPath]]" icon-accessor="[[iconAccessor]]" prevent-remove-tag="[[preventRemoveTag]]" prefix></paper-tags>
       <content select="[suffix]" suffix></content>
     </paper-input>
     <template is="dom-if" if="{{showCounter}}">
@@ -75,6 +75,10 @@ Custom property | Description | Default
 <script>
 Polymer({
   is: 'paper-tags-input',
+
+  behaviors: [
+    Polymer.PaperTagsBehavior
+  ],
 
   properties: {
     /**
@@ -97,7 +101,7 @@ Polymer({
      */
     delimiter: {
       type: String,
-      value: ","
+      value: ','
     },
     /**
      * `showCounter` display a paper-badge with `showCounter` as textContent
@@ -136,31 +140,37 @@ Polymer({
     }
   },
   observers: [
+    '_observeTagItemsInit(items)',
     '_observeTagItems(items.splices)'
   ],
 
-  behaviors: [
-    Polymer.PaperTagsBehavior
-  ],
+  _observeTagItemsInit: function(items) {
+    if(items && !this.valueArray) {
+      this._observeTagItems(items)
 
-  _observeTagItems: function() {
-    var a = [];
+    }
+
+  },
+  _observeTagItems: function(splices) {
+    if(!splices) {
+      return
+    }
+    var keys = [];
     this._isUpdatingingItems = true;
     this.items.forEach(function(item) {
-      var id = item[this.idAccessor] || item;
-      a.push(id + '');
+      var id = item[this.keyPath] || item;
+      keys.push(id + '');
     }, this);
 
-    if (!this._isUpdatingValueArray) {
-      this.set('valueArray', a);
-    }
+    this.syncValueArrayWithKeys(keys)
+
     delete this._isUpdatingingItems;
   },
 
   _removeLast: function() {
     var last = this.items.pop();
     this.items = this.items.slice();
-    this.fire('tag-removed', last);
+    // this.fire('tag-removed', last);
   },
 
   findTag: function(tag) {
@@ -171,26 +181,29 @@ Polymer({
     if (this.tagTpl) {
       var id = tag;
       tag = JSON.parse(JSON.stringify(this.tagTpl));
-      tag[this.idAccessor] = id + '';
-      if (this.labelAccessor) {
-        tag[this.labelAccessor] = id;
+      tag[this.keyPath] = id + '';
+      if (this.labelPath) {
+        tag[this.labelPath] = id;
       }
     }
     this.push('items', tag);
     this.items = this.items.slice();
-    this.fire('tag-added', tag);
+    // this.fire('tag-added', tag);
   },
 
   _keyDown: function(event) {
     var keyVal = event.keyCode;
     if (keyVal === 13 && this.allowAdd) {
       var tags = event.target.value.split(this.delimiter);
-      for (var tag of tags) {
-        if (!this.findTag(tag)) {
-          this._addTag(tag);
+      var me = this; 
+      
+      tags.forEach(function(tag) {
+       if (!me.findTag(tag)) {
+          me._addTag(tag);
           event.target.value = '';
         }
-      }
+      });
+      
     } else if (keyVal === 8 && event.target.value === '') {
       this._removeLast();
     }

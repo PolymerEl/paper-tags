@@ -24,7 +24,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu-icons.html">
 <link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu-shared-styles.html">
 <link rel="import" href="paper-tags-input.html">
-<link rel="import" href="paper-tags-behavior.html">
 <!--
 
 `paper-tag-dropdown` is based on paper-menu-dropdown, with selected item menu displayed as tags.
@@ -61,7 +60,7 @@ Custom property | Description | Default
     :host: {
       display: block;
     }
-    
+
     #filterCt {
       color: var(--default-primary-color);
       padding: 2px 8;
@@ -69,28 +68,26 @@ Custom property | Description | Default
 
     paper-menu {
       min-width: 150px;
-      
       @apply(--paper-menu);
     }
-
     </style>
     <!-- this div fulfills an a11y requirement for combobox, do not remove -->
     <div role="button"></div>
-    <paper-menu-button id="menuButton" vertical-align="[[verticalAlign]]" horizontal-align="[[horizontalAlign]]" vertical-offset="[[_computeMenuVerticalOffset(noLabelFloat)]]" disabled="[[disabled]]" no-animations="[[noAnimations]]" __on-iron-select="_onSelectionChange" __on-iron-deselect="_onSelectionChange" opened="{{opened}}">
+    <paper-menu-button id="menuButton" vertical-align="[[verticalAlign]]" horizontal-align="[[horizontalAlign]]" vertical-offset="[[_computeMenuVerticalOffset(noLabelFloat)]]" disabled="[[disabled]]" no-animations="[[noAnimations]]" opened="{{opened}}">
       <div class="dropdown-trigger">
         <paper-ripple></paper-ripple>
         <!-- paper-input has type="text" for a11y, do not remove -->
         <iron-a11y-keys id="a11y" target="[[keyTarget]]" keys="[[_computeKeys()]]" on-keys-pressed="_onAscii"></iron-a11y-keys>
-        <paper-tags-input max-tags="[[maxTags]]" prevent-remove-tag="[[preventRemoveTag]]" min-tags="[[minTags]]" id="tagInput" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tag-tpl]]" items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-accessor="[[labelAccessor]]" icon-accessor="[[iconAccessor]]" id-accessor="[[idAccessor]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]" show-counter="[[showCounter]]">
+        <paper-tags-input max-tags="[[maxTags]]" prevent-remove-tag="[[preventRemoveTag]]" min-tags="[[minTags]]" id="tagInput" value-object="{{valueObject}}" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tagTpl]]" items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-path="[[labelPath]]" icon-accessor="[[iconAccessor]]" key-path="[[keyPath]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]" show-counter="[[showCounter]]">
           <iron-icon icon="paper-dropdown-menu:arrow-drop-down" suffix></iron-icon>
         </paper-tags-input>
       </div>
-      <paper-menu class="dropdown-content" selected-values="{{valueArray}}" attr-for-selected="name" multi>
+      <paper-menu class="dropdown-content" disabled="[[disabled]]" selected-values="{{valueArray}}" attr-for-selected="name" multi>
         <div id="filterCt" hidden$="[[!searchString]]">
           <span>filter:  {{searchString}}</span>
         </div>
-        <template is="dom-repeat" items="{{items}}" filter="{{_computeFilter(searchString)}}">
-          <paper-item name="[[_computeItemValue(item, idAccessor)]]">[[_computeItemLabel(item, labelAccessor)]]</paper-item>
+        <template is="dom-repeat" items="[[items]]" filter="{{_computeFilter(searchString)}}">
+          <paper-item name="[[_computeItemValue(item, keyPath)]]">[[_computeItemLabel(item, labelPath)]]</paper-item>
         </template>
       </paper-menu>
       <content id="content" select=".dropdown-content"></content>
@@ -107,11 +104,38 @@ Custom property | Description | Default
         Polymer.IronButtonState,
         Polymer.IronControlState,
         Polymer.IronFormElementBehavior,
-        Polymer.IronValidatableBehavior,
-        Polymer.PaperTagsBehavior
+        Polymer.IronValidatableBehavior
       ],
 
       properties: {
+
+        /**
+         * `valueObject` store value as object keys `{"value1": true, "value2": true}`
+         */
+        valueObject: {
+          type: Object,
+          notify: true,
+		  observer: '_observeValueArray'
+        },
+
+        /**
+         * `valueArray` store value as array `["value1", "value2"]`
+         */
+        valueArray: {
+          type: Array,
+          notify: true,
+        },
+
+        keyPath: {
+          type: String,
+          value: 'id'
+        },
+
+        labelPath: {
+          type: String,
+          value: 'label'
+        },
+
 
         searchString: {
           type: String,
@@ -119,19 +143,51 @@ Custom property | Description | Default
         },
 
         items: {
-          type: Array
+          type: Array,
+          value: function() {
+            return [];
+          }
         },
 
         tagItems: {
           type: Array
         },
+
         /**
-         * `showCounter` 
+         * When true, `showCounter` display a counter counting the number of tags
          */
-        showCounter: String,
-        maxTags: Number,
-        minTags: Number,
-        tagTpl: Object,
+        showCounter: {
+          type: String
+        },
+
+        /*
+         * `maxTags` the maximum allowed number of tags
+         */
+        maxTags: {
+          type: Number
+        },
+
+        /*
+         * `minTags` the minimum allowed number of tags
+         */
+        minTags: {
+          type: Number
+        },
+
+        /*
+         * `readonly` - reflects to `disabled` when set to true.
+         */
+        readonly: {
+          type: Boolean,
+          observer: '_observeReadonly'
+        },
+
+        /**
+         * `tagTpl` a template Object used when creating new tags (e.g. '{"id":null, "label":"hello"}'). If not defuned, new tags will jus be Strings
+         */
+        tagTpl: {
+          type: Object
+        },
 
         keyTarget: {
           type: Object,
@@ -245,41 +301,51 @@ Custom property | Description | Default
       },
 
       observers: [
-        // '_observeValueArray(valueArray.splices)',
-        '_observeItems(items.splices)',
+        '_observeItems(items)',
+        '_observeValueArray(valueArray.splices)',
       ],
 
-      _observeItems: function(splices) {
-        this._observeValueArray()
-      },
-      _isUpdatingValueArray: 0,
-      _observeValueArray: function() {
-        this._isUpdatingValueArray++;
-        if ((this._isUpdatingValueArray < 2) && this.items) {
-          var o = {};
-          if (!this.valueArray || !this.valueArray.length) {
-             this.set('tagItems', []);
-            if (!this._isUpdatingValueObject) {
-              this.set('valueObject', null);
-            }
-            this._setValueJoin('');
-            this._isUpdatingValueArray--;
-            return;
-          }
-
-          this.valueArray.forEach(function(item) {
-            o[item] = true;
-          });
-          this.set('tagItems', this.items.filter(function(item) {
-            return this.valueArray.indexOf((item[this.idAccessor || item]) + '') > -1;
-          }, this));
-          if (!this._isUpdatingValueObject) {
-            this.set('valueObject', o);
-          }
-          this._setValueJoin(this.valueArray.join(', '));
+      _observeReadonly: function(readonly, old) {
+        if (readonly) {
+          this.disabled = true;
+          // remember that disabled property depends on readonly for run-time changes
+          this._disabledFromReadonly = true;
+          return;
         }
-        this._isUpdatingValueArray--;
+        if (old && readonly === false && this._disabledFromReadonly) {
+          this.disabled = false;
+        }
       },
+
+      _observeItems: function(items) {
+        // run every time item is set ore reset
+        if (items) {
+          this._isInitiatingItems = true;
+          this.set('tagItems', this._filterValueItems(this.valueArray));
+
+          delete this._isInitiatingItems;
+        }
+      },
+
+      _observeValueArray: function(splices) {
+		// run on any change to the valueArray
+        this.set('tagItems', this._filterValueItems(this.valueArray));
+      },
+
+	  _filterValueItems: function(valueArray) {
+		var filteredVals = [];
+		if (valueArray && this.items && this.items.length > 0) {
+		  filteredVals = this.items.filter(function(item) {
+			var itemKey = this.keyPath;
+			if (item[itemKey]) {
+			  return this.valueArray.indexOf(item[itemKey] + '') > -1;
+			}else {
+			  return this.valueArray.indexOf(item) > -1;
+			}
+		  }, this);
+		}
+		return filteredVals;
+	  },
 
       ready: function() {
         this.$.menuButton.ignoreSelect = true;
@@ -287,7 +353,6 @@ Custom property | Description | Default
         if (this.valueObject && !this.valueArray) {
           this.set('valueArray', Object.keys(this.valueObject));
         }
-        // this.set('valueObject', this.valueObject);
       },
 
       attached: function() {
@@ -323,14 +388,14 @@ Custom property | Description | Default
         this.$.menuButton.close();
       },
 
-      _computeItemValue: function(item, idAccessor) {
-        return (item[idAccessor] || item) + '';
+      _computeItemValue: function(item, keyPath) {
+        return (item[keyPath] || item) + '';
       },
 
-      _computeItemLabel: function(item, labelAccessor) {
-        var parts = Polymer.Base._getPathParts(labelAccessor);
+      _computeItemLabel: function(item, labelPath) {
+        var parts = Polymer.Base._getPathParts(labelPath);
         if (parts.length === 1) {
-          return item[labelAccessor] || item;
+          return item[labelPath] || item;
         }
         var label = item;
         parts.forEach(function(p) {
@@ -354,13 +419,17 @@ Custom property | Description | Default
 
       _computeFilter: function(string) {
         // return a filter function for the current search string
+        if (!string) {
+          return null;
+        }
         string = string.toLowerCase();
+
         var me = this;
-        var labelAccessor = this.labelAccessor;
-        var parts = Polymer.Base._getPathParts(labelAccessor);
+        var labelPath = this.labelPath;
+        var parts = Polymer.Base._getPathParts(labelPath);
         if (parts.length === 1) {
           return function(item) {
-            return item[labelAccessor] && item[labelAccessor].toLowerCase().indexOf(string) > -1;
+            return item[labelPath] && item[labelPath].toLowerCase().indexOf(string) > -1;
           };
         }
         return function(item) {
@@ -370,7 +439,7 @@ Custom property | Description | Default
               label = label[p];
             }
           });
-          return label &&  label.toLowerCase().indexOf(string) > -1;
+          return label && label.toLowerCase().indexOf(string) > -1;
         };
 
       },
@@ -399,25 +468,6 @@ Custom property | Description | Default
         }, 30);
 
       },
-
-      /**
-       * Udate tags items when the selection changes
-       */
-      // _observeSelected: function() {
-      //   this.__isUpdatingSelectedValues = true;
-      //   if (!this.__isUpdatingValueArray) {
-      //     if (this.idAccessor) {
-      //       this.set('valueArray', this.items.filter(function(item) {
-      //         return this.selectedValues.indexOf(item[this.idAccessor]) > -1;
-      //       }, this));
-      //     } else {
-      //       this.set('valueArray', this.selectedValues.map(function(value) {
-      //         return this.items[value];
-      //       }, this));
-      //     }
-      //   }
-      //   delete this.__isUpdatingSelectedValues;
-      // },
 
       /**
        * Compute the vertical offset of the menu based on the value of

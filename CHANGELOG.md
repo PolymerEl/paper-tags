@@ -2,6 +2,15 @@
 All notable changes to pre-ignition will be documented in this file.
 Started the changeLog from v1.0.4 only !
 
+## [1.7.0] - 2017-07-09
+- [x] fixed `tag-aded` not firing
+- [x] modified the way we keep track of added and removed tags using Array.splices. 
+
+## [1.6.0] - 2017-07-09
+Breaking changes: 
+- `labelAccessor` and `idAccessor` are renamed `labelPath` and `keyPath` as accessor is reserved for function accessors and not string paths
+
+
 ## [1.0.12] - 2017-01-09
 - [x] modified README
 - [x] added LICENSE
