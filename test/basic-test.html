@@ -23,27 +23,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </head>
   <body>
 
-  <dom-module id="paper-tags-tester">
-    <template>
-      <paper-tags-input id="tags" items='{{tags}}'></paper-tags-input>
-    </template>
-    <script>
-    Polymer({
-      is: 'paper-tags-tester',
-      properties: {
-        tags: {
-          type: Array,
-          notify: true,
-          value: function() {
-            return [];
+    <dom-module id="paper-tags-tester">
+      <template>
+        <paper-tags-input id="tags" items='{{tags}}'></paper-tags-input>
+      </template>
+      <script>
+      Polymer({
+        is: 'paper-tags-tester',
+        properties: {
+          tags: {
+            type: Array,
+            notify: true,
+            value: function() {
+              return [];
+            }
           }
-        }
-      },
-    });
-    </script>
-  </dom-module>
+        },
+      });
+      </script>
+    </dom-module>
 
-  <test-fixture id="tester">
+    <test-fixture id="tester">
       <template>
         <paper-tags-tester></paper-tags-tester>
       </template>
@@ -56,17 +56,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           tester = fixture('tester')
         });
 
-        test('adding tag sets the items value', function(done) {
+        test('adding tag sets the items value', function() {
 
           tester.$.tags.$.tagInput.value = 'foobar';
           MockInteractions.pressEnter(tags.$.tagInput);
 
-          // Mutation observer is async, so wait one tick.
-          Polymer.Base.async(function() {
-            assert.equal(tester.tags.length, 1, 'unexpected number of tags');
-            assert.equal(tester.tags[0], 'foobar', 'unexpected tag value');
-            done();
-          }, 1);
+          assert.equal(1, tester.tags.length, 'unexpected number of tags');
+          assert.equal('foobar', tester.tags[0], 'unexpected tag value');
         });
       });
     </script>
