@@ -92,7 +92,8 @@ Custom property | Description | Default
         Polymer.IronButtonState,
         Polymer.IronControlState,
         Polymer.IronFormElementBehavior,
-        Polymer.PaperTagsBehavior
+        Polymer.PaperTagsBehavior,
+        Polymer.IronValidatableBehavior
       ],
 
       properties: {
@@ -217,6 +218,11 @@ Custom property | Description | Default
           value: []
         },
         allowAdd: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+        required: {
           type: Boolean,
           value: false,
           reflectToAttribute: true
