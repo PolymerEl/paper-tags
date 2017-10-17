@@ -39,6 +39,7 @@ Custom property | Description | Default
 @demo demo/index.html
 -->
 <dom-module id="paper-tags">
+  <template>
   <style>
   :host {
     display: block;
@@ -74,7 +75,7 @@ Custom property | Description | Default
     display: inline-block;
   }
   </style>
-  <template>
+  
     <template is="dom-repeat" id="tagRepeat" items="[[items]]">
       <div class$="paper-tag-item [[_computeClass(item, classAccessor)]]">
         <span class="paper-tag-item-label">[[_computeLabel(item, labelAccessor)]]</span>
