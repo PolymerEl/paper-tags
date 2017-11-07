@@ -79,7 +79,9 @@ Custom property | Description | Default
     <template is="dom-repeat" id="tagRepeat" items="[[items]]">
       <div class$="paper-tag-item [[_computeClass(item, classAccessor)]]">
         <span class="paper-tag-item-label">[[_computeLabel(item, labelAccessor)]]</span>
-        <paper-icon-button icon="icons:close" hidden$="[[!isTagRemovable]]" on-tap="_removeTag"></paper-icon-button>
+        <template is="dom-if" if="[[ !readOnly ]]">
+            <paper-icon-button icon="icons:close" hidden$="[[!isTagRemovable]]" on-tap="_removeTag"></paper-icon-button>
+        </template>
         <paper-icon-button icon="[[_computeIcon(item, iconAccessor)]]" hidden$="[[isTagRemovable]]"></paper-icon-button>
       </div>
     </template>
