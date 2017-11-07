@@ -79,9 +79,7 @@ Custom property | Description | Default
     <template is="dom-repeat" id="tagRepeat" items="[[items]]">
       <div class$="paper-tag-item [[_computeClass(item, classAccessor)]]">
         <span class="paper-tag-item-label">[[_computeLabel(item, labelAccessor)]]</span>
-        <template is="dom-if" if="[[ !readOnly ]]">
-            <paper-icon-button icon="icons:close" hidden$="[[!isTagRemovable]]" on-tap="_removeTag"></paper-icon-button>
-        </template>
+        <paper-icon-button icon="icons:close" hidden$="[[ enableHide() ]]" on-tap="_removeTag"></paper-icon-button>
         <paper-icon-button icon="[[_computeIcon(item, iconAccessor)]]" hidden$="[[isTagRemovable]]"></paper-icon-button>
       </div>
     </template>
@@ -97,7 +95,11 @@ Polymer({
     /**
      * `readOnly`prevents tags to be removed
      */
-    readOnly: Boolean,
+    readOnly: {
+      type: Boolean,
+      value: false,
+      reflectToAttribute: true
+    },
     
     /**
      * `items` the Array of tags
@@ -139,6 +141,10 @@ Polymer({
       this.splice('items', index, 1);
       this.fire('tag-removed', model);
     }
+  },
+  
+  enableHide: function() {
+    return !this.isTagRemovable || this.readOnly;
   }
 });
 </script>
