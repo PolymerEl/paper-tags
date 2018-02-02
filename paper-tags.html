@@ -13,7 +13,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
-<link rel="import" href="paper-tags-behavior.html">
+<link rel="import" href="paper-tags-mixin.html">
 <!-- 
 An element for setting  displaying a single tag
 
@@ -39,6 +39,8 @@ Custom property | Description | Default
 @demo demo/index.html
 -->
 <dom-module id="paper-tags">
+
+  <template>
   <style>
   [hidden] {
     display: none !important;
@@ -46,17 +48,17 @@ Custom property | Description | Default
 
   :host {
     display: block;
-    @apply(--paper-font-common-base);
-    @apply(--paper-tags);
+    @apply --paper-font-common-base;
+    @apply --paper-tags;
   }
   
   div.paper-tag-item {
     margin-bottom: var(--paper-tag-margin, 3px);
-    border: 1px solid var(--paper-tag-focus-color, --default-primary-color);
+    border: 1px solid var(--paper-tag-focus-color, var(--default-primary-color));
     font-size: 13px;
-    color: var(--paper-tag-text-color, --secondary-text-color);
+    color: var(--paper-tag-text-color, var(--secondary-text-color));
     border-radius: 4px;
-    @apply(--paper-tag-item);
+    @apply --paper-tag-item;
   }
   
   .paper-tag-item:last-of-type {
@@ -64,7 +66,7 @@ Custom property | Description | Default
   }
   
   paper-icon-button {
-    color: var(--paper-tag-focus-color, --default-primary-color);
+    color: var(--paper-tag-focus-color,var(--default-primary-color));
     width: 20px;
     height: 20px;
     padding: 0;
@@ -78,7 +80,6 @@ Custom property | Description | Default
     display: inline-block;
   }
   </style>
-  <template>
     <template is="dom-repeat" id="tagRepeat" items="[[items]]">
       <div class$="paper-tag-item [[_computeClass(item, classAccessor)]]">
         <span class="paper-tag-item-label">[[_computeLabel(item, labelPath)]]</span>
@@ -89,61 +90,63 @@ Custom property | Description | Default
   </template>
 </dom-module>
 <script>
-Polymer({
+class PaperTags extends PaperTagsMixin(Polymer.Element) {
+	static get is() {
+	    return 'paper-tags'
+	}
+	static get properties() {
+	    return {
+		    /**
+		     * `readonly`prevents tags to be removed
+		     */
+		    readonly: Boolean,
+		    
+		    /**
+		     * `items` the Array of tags
+		     */
+		    items: {
+		      type: Array,
+		      notify: true,
+		      value: function() {
+		        return [];
+		      }
+		    }
+  		}
+	}
+	
+	_computeIcon(item, iconAccessor) {
+	  return item[iconAccessor] || this.icon;
+	}
+	
+	_computeClass(item, classAccessor) {
+	  return item[classAccessor] || this.itemClass;
+	}
+	
+	_computeLabel(item, labelPath) {
+	  return item[labelPath] || item;
+	}
+	
+	_removeTag(event) {
+	  if (this.readonly) {
+	    return;
+	  }
+	  event.detail.isRemoved = true;
+	  var model = event.model,
+	    index = this.items.indexOf(model.item);
+	
+	  if (index > -1) {
+	    event.stopPropagation();
+	    var remove_func = function() {
+		      this.splice('items', index, 1);
+	    };
+	    this._paper_tag_remove_item = Polymer.Debouncer.debounce(
+	       this._paper_tag_remove_item, // initially undefined
+	       Polymer.Async.timeOut.after(10),remove_func);
+	    // this.items = this.items.slice();
+	    // this.fire('tag-removed', model.item);
+	  }
+	}
+};
+customElements.define(PaperTags.is, PaperTags);
 
-  is: 'paper-tags',
-
-  behaviors: [
-    Polymer.PaperTagsBehavior
-  ],
-
-  properties: {
-    
-    /**
-     * `readonly`prevents tags to be removed
-     */
-    readonly: Boolean,
-    
-    /**
-     * `items` the Array of tags
-     */
-    items: {
-      type: Array,
-      notify: true,
-      value: function() {
-        return [];
-      }
-    }
-  },
-
-  _computeIcon: function(item, iconAccessor) {
-    return item[iconAccessor] || this.icon;
-  },
-
-  _computeClass: function(item, classAccessor) {
-    return item[classAccessor] || this.itemClass;
-  },
-
-  _computeLabel: function(item, labelPath) {
-    return item[labelPath] || item;
-  },
-
-  _removeTag: function(event) {
-    if (this.readonly) {
-      return;
-    }
-    event.detail.isRemoved = true;
-    var model = event.model,
-      index = this.items.indexOf(model.item);
-
-    if (index > -1) {
-      event.stopPropagation();
-      this.debounce('paper-tag-remove-item', function() {
-        this.splice('items', index, 1);
-      }, 10);
-      // this.items = this.items.slice();
-      // this.fire('tag-removed', model.item);
-    }
-  }
-});
 </script>
