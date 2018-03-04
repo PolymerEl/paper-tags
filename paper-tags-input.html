@@ -168,9 +168,7 @@ Polymer({
   },
 
   _removeLast: function() {
-    var last = this.items.pop();
-    this.items = this.items.slice();
-    // this.fire('tag-removed', last);
+    this.splice('items', this.items.length - 1);
   },
 
   findTag: function(tag) {
