@@ -171,9 +171,17 @@ Polymer({
     this.splice('items', this.items.length - 1);
   },
 
+  removeTag: function(tag) {
+    var position = this.items.indexOf(tag);
+    if(position > -1) {
+      this.splice('items', position, 1 );
+    }
+  },
+
   findTag: function(tag) {
     return this.items.includes(tag);
   },
+
 
   _addTag: function(tag) {
     if (this.tagTpl) {
