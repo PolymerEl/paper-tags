@@ -198,7 +198,7 @@ Polymer({
   },
 
   _keyDown: function(event) {
-    var keyVal = event.which;
+    var keyVal = event.keyCode;
     if (keyVal === 13 && this.allowAdd) {
       var tags = event.target.value.split(this.delimiter);
       var me = this; 
