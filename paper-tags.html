@@ -129,21 +129,22 @@ Polymer({
   },
 
   _removeTag: function(event) {
-    if (this.readonly) {
-      return;
-    }
-    event.detail.isRemoved = true;
-    var model = event.model,
-      index = this.items.indexOf(model.item);
+    // if (this.readonly) {
+    //   return;
+    // }
+    // event.detail.isRemoved = true;
+    // var model = event.model,
+    //   index = this.items.indexOf(model.item);
 
-    if (index > -1) {
-      event.stopPropagation();
-      this.debounce('paper-tag-remove-item', function() {
-        this.splice('items', index, 1);
-      }, 10);
-      // this.items = this.items.slice();
-      // this.fire('tag-removed', model.item);
-    }
+    // if (index > -1) {
+    //   event.stopPropagation();
+    //   this.debounce('paper-tag-remove-item', function() {
+    //     this.splice('items', index, 1);
+    //   }, 10);
+    //   // this.items = this.items.slice();
+      this.fire('tag-removed', event.model.item);
+    // }
   }
 });
 </script>
+
