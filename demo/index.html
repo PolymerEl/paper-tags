@@ -34,7 +34,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <h4>paper-tags</h4>
     <demo-snippet class="centered-demo">
       <template>
-        <paper-tags readonly tag-tpl_='{"id":null, "label":"hello"}' label-path="label" items='[{"id":1, "l" :"me", "label":"hello"},{"id":2, "label":"new"}]'></paper-tags>
+        <paper-tags
+          readonly
+          tag-tpl_='{"id":null, "label":"hello"}'
+          label-path="label"
+          items='[{"id":1, "l" :"me", "label":"hello"},{"id":2, "label":"new"}]'>
+        </paper-tags>
       </template>
     </demo-snippet>
   </div>
@@ -42,8 +47,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <h4>paper-tags-input</h4>
     <demo-snippet class="centered-demo">
       <template>
-        <template  is="dom-bind">
-          <paper-tags-input id="control" label="input label" show-counter="tags" items='["hello", "new"]' value="{{value}}" value-join="{{valueJoin}}" maxLength="10"></paper-tags-input>
+        <template is="dom-bind">
+          <paper-tags-input
+            id="control"
+            auto-validate
+            label="input label"
+            min-tags="2"
+            max-tags="5"
+            show-counter="tags"
+            error-message="At least 2 tags required and not more than 5 tags."
+            items='["hello", "new"]'
+            value="{{value}}"
+            value-join="{{valueJoin}}">
+          </paper-tags-input>
           <div>
             <div>value: {{valueJoin}}</div>
             <div>input value: {{value}}</div>
