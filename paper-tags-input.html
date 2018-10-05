@@ -39,8 +39,11 @@ Custom property | Description | Default
       --paper-tag-margin: 3px;
     }
 
-    paper-input {
+    :host[invalid] paper-input {
       margin-bottom: 15px;
+    }
+
+    paper-input {
       --paper-input-container-input: {
         margin-bottom: var(--paper-tag-margin);
       };
@@ -181,7 +184,7 @@ Polymer({
   ],
 
   _getValidity: function() {
-    let valid = true;
+    var valid = true;
     if (this.minTags) {
       valid = this.items.length >= this.minTags;
     }
