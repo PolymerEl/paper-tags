@@ -10,7 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="paper-tags.html">
-<link rel="import" href="paper-tags-behavior.html">
+<link rel="import" href="paper-tags-mixin.html">
 <!--
 An element for settings tags tags, based on paper-input
 
@@ -44,7 +44,6 @@ Custom property | Description | Default
     }
 
     paper-tags {
-      max-width: 80%;
     }
 
     paper-tags[readonly] {
@@ -61,9 +60,9 @@ Custom property | Description | Default
     }
     </style>
     <paper-input id="tagInput" always-float-label on-keydown="_keyDown" readonly$="[[readonly]]" placeholder$="[[placeholder]]" disabled$="[[disabled]]" invalid="[[invalid]]" label="[[label]]" value="{{value}}" maxlength$="[[maxlength]]" error-message="[[errorMessage]]" minlength$="[[minlength]]" invalid="{{invalid}}">
-      <content select="[prefix]" prefix></content>
-      <paper-tags id="paperTags" readonly$="[[readonly]]" items="{{items}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-path="[[labelPath]]" icon-accessor="[[iconAccessor]]" prevent-remove-tag="[[preventRemoveTag]]" prefix></paper-tags>
-      <content select="[suffix]" suffix></content>
+      <slot name="[prefix]" slot="prefix"></slot>
+      <paper-tags id="paperTags" readonly$="[[readonly]]" items="{{items}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-path="[[labelPath]]" icon-accessor="[[iconAccessor]]" prevent-remove-tag="[[preventRemoveTag]]" slot="prefix"></paper-tags>
+      <slot  name="[suffix]" slot="suffix"></slot>
     </paper-input>
     <template is="dom-if" if="{{showCounter}}">
       <div class="paper-tags-counter">
@@ -73,153 +72,149 @@ Custom property | Description | Default
   </template>
 </dom-module>
 <script>
-Polymer({
-  is: 'paper-tags-input',
+class PaperTagsInput extends PaperTagsMixin(Polymer.Element) {
+	static get is() {
+	    return 'paper-tags-input'
+	}
+	static get properties() {
+	    return {
+		    /**
+		     * `preventRemoveTag` hide the `close` icon and prevent removing a tag when true.
+		     */
+		    preventRemoveTag: {
+		      type: Boolean,
+		      value: false
+		    },
+		
+		    /**
+		     * `items` the Array of tags
+		     */
+		    items: {
+		      type: Array,
+		      notify: true
+		    },
+		    /**
+		     * `delimiter` defaults to comma (,)
+		     */
+		    delimiter: {
+		      type: String,
+		      value: ','
+		    },
+		    /**
+		     * `showCounter` display a paper-badge with `showCounter` as textContent
+		     */
+		    showCounter: String,
+		
+		    /**
+		     * `maxTags` The maximum allowed number of tags (yet to be implemented)
+		     */
+		    maxTags: Number,
+		
+		    /**
+		     * `minTags` The minimum allowed number of tags (yet to be implemented)
+		     */
+		    minTags: Number,
+		
+		    /**
+		     * `tagTpl` a template Object used when creating new tags. If not defuned, new tags will jus be Strings
+		     */
+		    tagTpl: Object,
+		
+		    /**
+		     * `value` the underlying paper-input value
+		     */
+		    value: {
+		      type: String,
+		      notify: true
+		    },
+		
+		    /**
+		     * `allowAdd` determines if new tags are allowed on pressing `Enter` or not.
+		     */
+		    allowAdd: {
+		      type: Boolean,
+		      value: true
+		    }
+	  }
+	}
+	static get observers() {
+	     return [
+		 '_observeTagItemsInit(items)',
+		  '_observeTagItems(items.splices)'
+		]
+	}
+	
+	_observeTagItemsInit(items) {
+	  if(items && !this.valueArray) {
+	    this._observeTagItems(items)
+	
+	  }
+	
+	}
+	_observeTagItems(splices) {
+	  if(!splices) {
+	    return
+	  }
+	  var keys = [];
+	  this._isUpdatingingItems = true;
+	  this.items.forEach(function(item) {
+	    var id = item[this.keyPath] || item;
+	    keys.push(id + '');
+	  }, this);
+	
+	  this.syncValueArrayWithKeys(keys)
+	
+	  delete this._isUpdatingingItems;
+	}
+	
+	_removeLast() {
+	  var last = this.items.pop();
+	  this.items = this.items.slice();
+	  // this.fire('tag-removed', last);
+	}
+	
+	findTag(tag) {
+	  return this.items.includes(tag);
+	}
+	
+	_addTag(tag) {
+	  if (this.tagTpl) {
+	    var id = tag;
+	    tag = JSON.parse(JSON.stringify(this.tagTpl));
+	    tag[this.keyPath] = id + '';
+	    if (this.labelPath) {
+	      tag[this.labelPath] = id;
+	    }
+	  }
+	  this.push('items', tag);
+	  this.items = this.items.slice();
+	  // this.fire('tag-added', tag);
+	}
+	
+	_keyDown(event) {
+	  var keyVal = event.which;
+	  if (keyVal === 13 && this.allowAdd) {
+	    var tags = event.target.value.split(this.delimiter);
+	    var me = this; 
+	    
+	    tags.forEach(function(tag) {
+	     if (!me.findTag(tag)) {
+	        me._addTag(tag);
+	        event.target.value = '';
+	      }
+	    });
+	    
+	  } else if (keyVal === 8 && event.target.value === '') {
+	    this._removeLast();
+	  }
+	}
+	/**
+	 * Returns a reference to the focusable element.
+	 */
+	get _focusableElement() {
+	  return this.$.tagInput.inputElement;
+	}
 
-  behaviors: [
-    Polymer.PaperTagsBehavior
-  ],
-
-  properties: {
-    /**
-     * `preventRemoveTag` hide the `close` icon and prevent removing a tag when true.
-     */
-    preventRemoveTag: {
-      type: Boolean,
-      value: false
-    },
-
-    /**
-     * `items` the Array of tags
-     */
-    items: {
-      type: Array,
-      notify: true
-    },
-    /**
-     * `delimiter` defaults to comma (,)
-     */
-    delimiter: {
-      type: String,
-      value: ','
-    },
-    /**
-     * `showCounter` display a paper-badge with `showCounter` as textContent
-     */
-    showCounter: String,
-
-    /**
-     * `maxTags` The maximum allowed number of tags (yet to be implemented)
-     */
-    maxTags: Number,
-
-    /**
-     * `minTags` The minimum allowed number of tags (yet to be implemented)
-     */
-    minTags: Number,
-
-    /**
-     * `tagTpl` a template Object used when creating new tags. If not defuned, new tags will jus be Strings
-     */
-    tagTpl: Object,
-
-    /**
-     * `value` the underlying paper-input value
-     */
-    value: {
-      type: String,
-      notify: true
-    },
-
-    /**
-     * `allowAdd` determines if new tags are allowed on pressing `Enter` or not.
-     */
-    allowAdd: {
-      type: Boolean,
-      value: true
-    }
-  },
-  observers: [
-    '_observeTagItemsInit(items)',
-    '_observeTagItems(items.splices)'
-  ],
-
-  _observeTagItemsInit: function(items) {
-    if(items && !this.valueArray) {
-      this._observeTagItems(items)
-
-    }
-
-  },
-  _observeTagItems: function(splices) {
-    if(!splices) {
-      return
-    }
-    var keys = [];
-    this._isUpdatingingItems = true;
-    this.items.forEach(function(item) {
-      var id = item[this.keyPath] || item;
-      keys.push(id + '');
-    }, this);
-
-    this.syncValueArrayWithKeys(keys)
-
-    delete this._isUpdatingingItems;
-  },
-
-  _removeLast: function() {
-    this.splice('items', this.items.length - 1);
-  },
-
-  removeTag: function(tag) {
-    var position = this.items.indexOf(tag);
-    if(position > -1) {
-      this.splice('items', position, 1 );
-    }
-  },
-
-  findTag: function(tag) {
-    return this.items.includes(tag);
-  },
-
-
-  _addTag: function(tag) {
-    if (this.tagTpl) {
-      var id = tag;
-      tag = JSON.parse(JSON.stringify(this.tagTpl));
-      tag[this.keyPath] = id + '';
-      if (this.labelPath) {
-        tag[this.labelPath] = id;
-      }
-    }
-    this.push('items', tag);
-    this.items = this.items.slice();
-    // this.fire('tag-added', tag);
-  },
-
-  _keyDown: function(event) {
-    var keyVal = event.keyCode;
-    if (keyVal === 13 && this.allowAdd) {
-      var tags = event.target.value.split(this.delimiter);
-      var me = this; 
-      
-      tags.forEach(function(tag) {
-       if (!me.findTag(tag)) {
-          me._addTag(tag);
-          event.target.value = '';
-        }
-      });
-      
-    } else if (keyVal === 8 && event.target.value === '') {
-      this._removeLast();
-    }
-  },
-  /**
-   * Returns a reference to the focusable element.
-   */
-  get _focusableElement() {
-    return this.$.tagInput.inputElement;
-  },
-
-});
+};
+customElements.define(PaperTagsInput.is, PaperTagsInput);
 </script>
