@@ -18,11 +18,7 @@
   "main": "paper-tags-import.html",
   "license": "https://github.com/PolymerEl/LICENCE",
   "homepage": "https://github.com/PolymerEl/paper-tags",
-  "ignore": [
-    "/.*",
-    "/test/",
-    "/demo/"
-  ],
+  "ignore": [],
   "repository": {
 	  "type": "git",
 	  "url": "https://github.com/Weaverize/paper-tags.git"
