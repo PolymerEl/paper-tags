@@ -9,6 +9,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
+<link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
 <link rel="import" href="paper-tags.html">
 <link rel="import" href="paper-tags-behavior.html">
 <!--
@@ -37,10 +39,14 @@ Custom property | Description | Default
       --paper-tag-margin: 3px;
     }
 
+    :host[invalid] paper-input {
+      margin-bottom: 15px;
+    }
+
     paper-input {
       --paper-input-container-input: {
         margin-bottom: var(--paper-tag-margin);
-      }
+      };
     }
 
     paper-tags {
@@ -60,14 +66,39 @@ Custom property | Description | Default
       display: inline-block;
     }
     </style>
-    <paper-input id="tagInput" always-float-label on-keydown="_keyDown" readonly$="[[readonly]]" placeholder$="[[placeholder]]" disabled$="[[disabled]]" invalid="[[invalid]]" label="[[label]]" value="{{value}}" maxlength$="[[maxlength]]" error-message="[[errorMessage]]" minlength$="[[minlength]]" invalid="{{invalid}}">
+    <paper-input
+      id="tagInput"
+      always-float-label
+      on-keydown="_keyDown"
+      readonly$="[[readonly]]"
+      placeholder$="[[placeholder]]"
+      disabled$="[[disabled]]"
+      label="[[label]]"
+      value="{{value}}"
+      maxlength$="[[maxlength]]"
+      error-message="[[errorMessage]]"
+      minlength$="[[minlength]]"
+      invalid="{{invalid}}">
       <content select="[prefix]" prefix></content>
-      <paper-tags id="paperTags" readonly$="[[readonly]]" items="{{items}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-path="[[labelPath]]" icon-accessor="[[iconAccessor]]" prevent-remove-tag="[[preventRemoveTag]]" prefix></paper-tags>
+      <paper-tags id="paperTags"
+        readonly$="[[readonly]]"
+        items="{{items}}"
+        icon="[[icon]]"
+        item-class="[[itemClass]]"
+        class-accessor="[[classAccessor]]"
+        label-path="[[labelPath]]"
+        icon-accessor="[[iconAccessor]]"
+        prevent-remove-tag="[[preventRemoveTag]]"
+        prefix>
+      </paper-tags>
       <content select="[suffix]" suffix></content>
     </paper-input>
-    <template is="dom-if" if="{{showCounter}}">
+    <template is="dom-if" if="[[showCounter]]">
       <div class="paper-tags-counter">
-        <paper-badge class="paper-tags-badge" label="[[items.length]]"></paper-badge> [[showCounter]]
+        <paper-badge
+          class="paper-tags-badge"
+          label="[[items.length]]">
+        </paper-badge> [[showCounter]]
       </div>
     </template>
   </template>
@@ -77,10 +108,17 @@ Polymer({
   is: 'paper-tags-input',
 
   behaviors: [
-    Polymer.PaperTagsBehavior
+    Polymer.PaperTagsBehavior,
+    Polymer.IronFormElementBehavior,
+    Polymer.IronValidatableBehavior
   ],
 
   properties: {
+    /* Adds auto-validation logic so this element updates it's validate status when it's values change */
+    autoValidate: {
+      type: Boolean,
+      value: false,
+    },
     /**
      * `preventRemoveTag` hide the `close` icon and prevent removing a tag when true.
      */
@@ -109,12 +147,12 @@ Polymer({
     showCounter: String,
 
     /**
-     * `maxTags` The maximum allowed number of tags (yet to be implemented)
+     * `maxTags` The maximum allowed number of tags
      */
     maxTags: Number,
 
     /**
-     * `minTags` The minimum allowed number of tags (yet to be implemented)
+     * `minTags` The minimum allowed number of tags
      */
     minTags: Number,
 
@@ -140,9 +178,27 @@ Polymer({
     }
   },
   observers: [
+    '_autoValidate(autoValidate, minTags, maxTags, items, items.splices)',
     '_observeTagItemsInit(items)',
     '_observeTagItems(items.splices)'
   ],
+
+  _getValidity: function() {
+    var valid = true;
+    if (this.minTags) {
+      valid = this.items.length >= this.minTags;
+    }
+    if (this.maxTags && valid) {
+      valid = this.items.length <= this.maxTags;
+    }
+    return valid;
+  },
+
+  _autoValidate: function(autoValidate) {
+    if (autoValidate) {
+      this.validate();
+    }
+  },
 
   _observeTagItemsInit: function(items) {
     if(items && !this.valueArray) {
@@ -201,15 +257,15 @@ Polymer({
     var keyVal = event.keyCode;
     if (keyVal === 13 && this.allowAdd) {
       var tags = event.target.value.split(this.delimiter);
-      var me = this; 
-      
+      var me = this;
+
       tags.forEach(function(tag) {
        if (!me.findTag(tag)) {
           me._addTag(tag);
           event.target.value = '';
         }
       });
-      
+
     } else if (keyVal === 8 && event.target.value === '') {
       this._removeLast();
     }
