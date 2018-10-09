@@ -20,8 +20,8 @@
   "homepage": "https://github.com/PolymerEl/paper-tags",
   "ignore": [],
   "repository": {
-	  "type": "git",
-	  "url": "https://github.com/Weaverize/paper-tags.git"
+    "type": "git",
+    "url": "https://github.com/Weaverize/paper-tags.git"
   },
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
@@ -36,7 +36,8 @@
     "paper-item": "PolymerElements/paper-item#^2.0.0",
     "paper-ripple": "PolymerElements/paper-ripple#^2.0.0",
     "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^2.0.0",
-    "paper-listbox": "PolymerElements/paper-listbox#^2.0.0"
+    "paper-listbox": "PolymerElements/paper-listbox#^2.0.0",
+    "web-animations-js": "^2.3.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
