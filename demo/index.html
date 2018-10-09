@@ -15,6 +15,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>paper-tags Demo</title>
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <!-- Ensure Web Animations polyfill is loaded since neon-animation 2.0 doesn't import it -->
+  <link rel="import" href="../../neon-animation/web-animations.html">
   <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
   <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
@@ -32,7 +34,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <h4>paper-tags</h4>
     <demo-snippet class="centered-demo">
       <template>
-        <paper-tags readonly tag-tpl_='{"id":null, "label":"hello"}' label-path="label" items='[{"id":1, "l" :"me", "label":"hello"},{"id":2, "label":"new"}]'></paper-tags>
+        <paper-tags readonly  tag-tpl_='{"id":null, "label":"hello"}' label-path="label" items='[{"id":1, "l" :"me", "label":"hello"},{"id":2, "label":"new"}]'></paper-tags>
       </template>
     </demo-snippet>
   </div>
@@ -42,7 +44,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <template>
         <dom-bind>
           <template>
-            <paper-tags-input id="control" label="input label" show-counter="tags" items='["hello", "new"]' value="{{value}}" value-join="{{valueJoin}}" maxLength="10"></paper-tags-input>
+            <paper-tags-input id="control" 
+            label="input label" 
+            show-counter="tags" 
+            items='["hello", "new"]' 
+            value="{{value}}" 
+            value-join="{{valueJoin}}" 
+            maxLength="10"></paper-tags-input>
             <div>
               <div>value: {{valueJoin}}</div>
               <div>input value: {{value}}</div>
@@ -65,7 +73,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               }
             }
             </style>
-            <paper-tags-dropdown id="control" items="{{items}}" label-path="label" noink label="label dropdown" value-object='{"5": "true"}'></paper-tags-dropdown>
+            <paper-tags-dropdown id="control" items="{{items}}" label-path="label" noink label="label dropdown" value-array='["5"]'></paper-tags-dropdown>
           </template>
         </dom-bind>
       </template>
@@ -84,7 +92,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               }
             }
             </style>
-            <paper-tags-dropdown id="stringControl" items='["Doe", "Rae", "Mee", "Faa", "So", "Laa", "Tee", "Daa"]' label-path="label" noink label="label dropdown" value-array='["Rae"]'>
+            <paper-tags-dropdown id="stringControl" items='["Doe", "Rae", "Mee", "Faa", "So", "Laa", "Tee", "Daa"]' allow-search noink label="label dropdown" value-array='["Rae"]'>
             </paper-tags-dropdown>
           </template>
         </dom-bind>
@@ -94,12 +102,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
   window.addEventListener('WebComponentsReady', function() {
 
-    tagDropdown = document.querySelector('#tagDropdown');
-    // app.listenSelect = function(e) {
-    //   console.info('Listed', e);
-    // }
+    const tagDropdown = document.querySelector('#tagDropdown');
+
     var data = [{
-      id: 1,
+      id: '1',
       desc: 'description 1',
       label: 'Title 1'
 
@@ -112,20 +118,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       desc: 'description 4',
       label: 'Hello'
     }, {
-      id: 6,
+      id: '6',
       desc: 'description 4',
       label: 'Bar'
     }];
+
     setTimeout(function() {
-      tagDropdown.$.control.set('items', data)
+      tagDropdown.$.control.set('items', data);
     }, 100);
 
     tagDropdown.$.control.addEventListener('tag-removed', function(e, d) {
-      console.log("tag-removed", e.detail);
+      console.log('tag-removed', e, d);
     }.bind(this));
 
     tagDropdown.$.control.addEventListener('tag-added', function(e, d) {
-      console.log("tag-added", e.detail);
+      console.log('tag-added', e, d);
     }.bind(this));
   });
   </script>

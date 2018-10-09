@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../iron-behaviors/iron-button-state.html">
 <link rel="import" href="../iron-behaviors/iron-control-state.html">
+<link rel="import" href="../iron-selector/iron-multi-selectable.html">
 <link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
@@ -61,9 +62,14 @@ Custom property | Description | Default
       display: block;
     }
 
+    paper-tags-input {
+      --paper-input-container-shared-input-style_-_width: 100px;
+    }
+
     #filterCt {
       color: var(--default-primary-color);
-      padding: 2px 8;
+      padding: 2px 8px;
+      margin-top: -14px;
     }
 
     paper-listbox {
@@ -73,30 +79,80 @@ Custom property | Description | Default
     </style>
     <!-- this div fulfills an a11y requirement for combobox, do not remove -->
     <div role="button"></div>
-    <paper-menu-button id="menuButton" vertical-align="[[verticalAlign]]" horizontal-align="[[horizontalAlign]]" vertical-offset="[[_computeMenuVerticalOffset(noLabelFloat)]]" disabled="[[disabled]]" no-animations="[[noAnimations]]" opened="{{opened}}">
-      <div class="dropdown-trigger">
+    <paper-menu-button 
+      id="menuButton" 
+      vertical-align="[[verticalAlign]]"
+      horizontal-align="[[horizontalAlign]]"
+      vertical-offset="[[_computeMenuVerticalOffset(noLabelFloat)]]" 
+      disabled="[[disabled]]"
+      no-animations="[[noAnimations]]"
+      opened="{{opened}}"
+      close-on-activate
+      allow-outside-scroll="[[allowOutsideScroll]]"
+      restore-focus-on-close="[[restoreFocusOnClose]]">
+
+      <div slot="dropdown-trigger">
+
         <paper-ripple></paper-ripple>
         <!-- paper-input has type="text" for a11y, do not remove -->
         <iron-a11y-keys id="a11y" target="[[keyTarget]]" keys="[[_computeKeys()]]" on-keys-pressed="_onAscii"></iron-a11y-keys>
-        <paper-tags-input max-tags="[[maxTags]]" prevent-remove-tag="[[preventRemoveTag]]" min-tags="[[minTags]]" id="tagInput" value-object="{{valueObject}}" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tagTpl]]" items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-path="[[labelPath]]" icon-accessor="[[iconAccessor]]" key-path="[[keyPath]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]" show-counter="[[showCounter]]">
-          <iron-icon icon="paper-dropdown-menu:arrow-drop-down" suffix></iron-icon>
+        <paper-tags-input 
+          id="tagInput" 
+          max-tags="[[maxTags]]" 
+          min-tags="[[minTags]]" 
+          prevent-remove-tag="[[preventRemoveTag]]" 
+          value-object="{{valueObject}}" 
+          value-array="{{valueArray}}" 
+          tag-tpl="[[tagTpl]]" 
+          items="[[tagItems]]" 
+          value="{{value}}" 
+          icon="[[icon]]" 
+          item-class="[[itemClass]]" 
+          class-path="[[classPath]]" 
+          label-path="[[labelPath]]" 
+          icon-path="[[iconPath]]" 
+          key-path="[[keyPath]]" 
+          invalid="[[invalid]]" 
+          readonly="[[readonly]]" 
+          disabled="[[disabled]]" 
+          placeholder="[[placeholder]]" 
+          error-message="[[errorMessage]]" 
+          label="[[label]]" 
+          show-counter="[[showCounter]]">
+          <iron-icon icon="paper-dropdown-menu:arrow-drop-down" slot="suffix"></iron-icon>
         </paper-tags-input>
       </div>
-      <paper-listbox class="dropdown-content" disabled="[[disabled]]" selected-values="{{valueArray}}" attr-for-selected="name" multi>
-        <div id="filterCt" hidden$="[[!searchString]]">
-          <span>filter:  {{searchString}}</span>
-        </div>
+      <paper-listbox 
+        slot="dropdown-content" 
+        disabled="[[disabled]]" 
+        selected-values="{{valueArray}}" 
+        items="{{listItems}}" 
+        attr-for-selected="name" 
+        multi>
+        <template is="dom-if" if="[[allowSearch]]">
+          <paper-input id="filterCt" label="filter" value="{{searchString}}"
+              on-tap="_stopEventPropagation"
+              on-keydown="_stopEventPropagation"
+              on-keyup="_stopEventPropagation"></paper-input>
+        </template>
         <template is="dom-repeat" items="[[items]]" filter="{{_computeFilter(searchString)}}">
-          <paper-item name="[[_computeItemValue(item, keyPath)]]">[[_computeItemLabel(item, labelPath)]]</paper-item>
+          <paper-item name="[[doGet(keyPath,item)]]">[[doGet(labelPath,item)]]</paper-item>
         </template>
       </paper-listbox>
-      <content id="content" select=".dropdown-content"></content>
+      <slot id="content" name="dropdown-content"></slot>
     </paper-menu-button>
   </template>
   <script>
-  class PaperTagsDropdown extends Polymer.mixinBehaviors([Polymer.IronValidatorBehavior, Polymer.IronFormElementBehavior, Polymer.IronButtonState, Polymer.IronControlState], Polymer.Element) {
+  class PaperTagsDropdown extends Polymer.mixinBehaviors([
+    Polymer.IronValidatableBehavior,
+    Polymer.IronFormElementBehavior,
+    Polymer.IronButtonState,
+    Polymer.IronControlState,
+    // Polymer.IronMultiSelectableBehavior
+  ], Polymer.Element) {
+
     static get is() {
-      return 'paper-tags-dropdown'
+      return 'paper-tags-dropdown';
     }
 
     static get properties() {
@@ -104,10 +160,17 @@ Custom property | Description | Default
         /**
          * `valueObject` store value as object keys `{"value1": true, "value2": true}`
          */
-        valueObject: {
-          type: Object,
-          notify: true,
-          observer: '_observeValueArray'
+        // valueObject: {
+        //   type: Object,
+        //   notify: true
+        //   // observer: '_observeValueArray'
+        // },
+
+        /* 
+         * listItems` the 
+         */
+        listItems: {
+          type: Array
         },
 
         /**
@@ -128,11 +191,26 @@ Custom property | Description | Default
           value: 'label'
         },
 
+        iconPath: {
+          type: String
+        },
+
+        classPath: {
+          type: String
+        },
 
         searchString: {
           type: String,
           value: ''
         },
+
+        /* 
+         * `allowSearch` true to allow filter items
+         */
+         allowSearch : {
+           type:  Boolean,
+           value: false
+          },
 
         items: {
           type: Array,
@@ -142,7 +220,10 @@ Custom property | Description | Default
         },
 
         tagItems: {
-          type: Array
+          type: Array,
+          value: function() {
+            return [];
+          }
         },
 
         /**
@@ -186,11 +267,11 @@ Custom property | Description | Default
          * is the `label` property on the selected item if set, or else the
          * trimmed text content of the selected item.
          */
-        selectedItemLabel: {
-          type: String,
-          notify: true,
-          readOnly: true
-        },
+        // selectedItemLabel: {
+        //   type: String,
+        //   notify: true,
+        //   readOnly: true
+        // },
 
         /**
          * The label for the dropdown.
@@ -222,6 +303,17 @@ Custom property | Description | Default
           value: false,
           observer: '_openedChanged'
         },
+
+       /**
+       * By default, the dropdown will constrain scrolling on the page
+       * to itself when opened.
+       * Set to true in order to prevent scroll from being constrained
+       * to the dropdown when it opens.
+       */
+      allowOutsideScroll: {
+        type: Boolean,
+        value: false
+      },
 
         /**
          * Set to true to disable the floating label. Bind this to the
@@ -269,9 +361,41 @@ Custom property | Description | Default
           value: 'top'
         },
 
+        /**
+         * Overrides the vertical offset computed in
+         * _computeMenuVerticalOffset.
+         */
+         verticalOffset: Number,
+
+        /**
+         * If true, the `horizontalAlign` and `verticalAlign` properties will
+         * be considered preferences instead of strict requirements when
+         * positioning the dropdown and may be changed if doing so reduces
+         * the area of the dropdown falling outside of `fitInto`.
+         */
+        dynamicAlign: {
+          type: Boolean
+        },
+
+        /**
+         * Whether focus should be restored to the dropdown when the menu closes.
+         */
+        restoreFocusOnClose: {
+          type: Boolean,
+          value:true
+        },
+
         keyTarget: {
-        	type: Object
+          type: Object
+        },
+
+        /* 
+         * `allowAdd`  true to allow adding custom tags (they will be reflected in items)
+         */
+        allowAdd: {
+          type:Boolean
         }
+
       };
     }
 
@@ -300,7 +424,8 @@ Custom property | Description | Default
     static get observers() {
       return [
         '_observeItems(items)',
-        '_observeValueArray(valueArray.splices)',
+        '_observeValueArray(valueArray.splices, items)'
+        // '_observeValueArray(valueObject.*, items)'
       ];
     }
 
@@ -320,36 +445,41 @@ Custom property | Description | Default
       // run every time item is set ore reset
       if (items) {
         this._isInitiatingItems = true;
+        // we override labelPath and keyPath if items is composed of primitives
+        if(items[0] && (typeof items[0] === 'string' || typeof items[0] === 'number')  ) {
+          this.labelPath = '';
+          this.keyPath = '';
+        }
         this.set('tagItems', this._filterValueItems(this.valueArray));
-
         delete this._isInitiatingItems;
       }
     }
 
     _observeValueArray(splices) {
       // run on any change to the valueArray
-      this.set('tagItems', this._filterValueItems(this.valueArray));
+      if(this.items) {
+        this.set('tagItems', this._filterValueItems(this.valueArray));
+      }
     }
 
     _filterValueItems(valueArray) {
-      var filteredVals = [];
       if (valueArray && this.items && this.items.length > 0) {
-        filteredVals = this.items.filter(function(item) {
-          var itemKey = this.keyPath;
-          if (item[itemKey]) {
-            return this.valueArray.indexOf(item[itemKey] + '') > -1;
+        return this.items.filter(item => {
+          let val; 
+          if (this.keyPath && (val = this.get(this.keyPath, item))) {
+            return this.valueArray.indexOf(val + '') > -1;
           } else {
             return this.valueArray.indexOf(item) > -1;
           }
-        }, this);
+        });
       }
-      return filteredVals;
+      return [];
     }
 
     ready() {
       super.ready();
       this.$.menuButton.ignoreSelect = true;
-      this.$.tagInput.allowAdd = false;
+      this.$.tagInput.preventAdd = !this.allowAdd;
       if (this.valueObject && !this.valueArray) {
         this.set('valueArray', Object.keys(this.valueObject));
       }
@@ -373,7 +503,13 @@ Custom property | Description | Default
      * The content element that is contained by the dropdown menu, if any.
      */
     get contentElement() {
-      return Polymer.dom(this.$.content).getDistributedNodes()[0];
+      // Polymer 2.x returns slot.assignedNodes which can contain text nodes.
+      var nodes = Polymer.dom(this.$.content).getDistributedNodes();
+      for (var i = 0, l = nodes.length; i < l; i++) {
+        if (nodes[i].nodeType === Node.ELEMENT_NODE) {
+          return nodes[i];
+        }
+      }
     }
 
     /**
@@ -388,25 +524,6 @@ Custom property | Description | Default
      */
     close() {
       this.$.menuButton.close();
-    }
-
-    _computeItemValue(item, keyPath) {
-      return (item[keyPath] || item) + '';
-    }
-
-    _computeItemLabel(item, labelPath) {
-      var parts = Polymer.Base._getPathParts(labelPath);
-      if (parts.length === 1) {
-        return item[labelPath] || item;
-      }
-      var label = item;
-      parts.forEach(function(p) {
-        if (label) {
-          label = label[p];
-        }
-      });
-      return label;
-
     }
 
     _computeKeys() {
@@ -425,22 +542,8 @@ Custom property | Description | Default
         return null;
       }
       string = string.toLowerCase();
-
-      var me = this;
-      var labelPath = this.labelPath;
-      var parts = Polymer.Base._getPathParts(labelPath);
-      if (parts.length === 1) {
-        return function(item) {
-          return item[labelPath] && item[labelPath].toLowerCase().indexOf(string) > -1;
-        };
-      }
-      return function(item) {
-        var label = item;
-        parts.forEach(function(p) {
-          if (label) {
-            label = label[p];
-          }
-        });
+      return (item) => {
+        const label = this.doGet(this.labelPath, item);
         return label && label.toLowerCase().indexOf(string) > -1;
       };
 
@@ -457,18 +560,31 @@ Custom property | Description | Default
       }
     }
 
-    _onTagTap(e) {
-      if (e.detail.isRemoved || (e.srcElement.localName === 'input')) {
-        e.stopPropagation();
-      }
+    /* 
+     * `doGet` 
+     */
+     doGet(path, item) {
+        if(!path) {
+          return item;
+        }
+        return this.get(path, item);
     }
 
-    _onAscii(event) {
-      this.open();
-      this.async(function() {
-        this.set('searchString', this.$.tagInput.value)
-      }, 30);
+    // _onTagTap(e) {
+      // console.info(e);
+      // if (e.srcElement.localName === 'input') {
+      //   e.stopPropagation();
+      // }
+    // }
 
+    _onAscii(event) {
+      if(!this.allowAdd) {
+        this.async(function() {
+          this.set('searchString', this.$.tagInput.value);
+          this.open();
+          this.$.tagInput.$.tagInput.focus()
+        }, 30);
+      }
     }
 
     /**
@@ -498,13 +614,20 @@ Custom property | Description | Default
     }
 
     _openedChanged() {
-      var openState = this.opened ? 'true' : 'false';
+      if(!this.opened) {
+        this.searchString = ''  ;
+        this.value = ''  ;
+      }
       var e = this.contentElement;
       if (e) {
-        e.setAttribute('aria-expanded', openState);
+        e.setAttribute('aria-expanded', this.opened ? 'true' : 'false');
       }
     }
-  };
+
+   _stopEventPropagation(e) {
+        e.stopPropagation();
+    }
+  }
 
   customElements.define(PaperTagsDropdown.is, PaperTagsDropdown);
   </script>
