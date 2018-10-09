@@ -63,6 +63,7 @@ Custom property | Description | Default
     }
 
     paper-tags-input {
+      apply --paper-tags-dropdown-input;
       --paper-input-container-shared-input-style_-_width: 100px;
     }
 
@@ -74,7 +75,7 @@ Custom property | Description | Default
 
     paper-listbox {
       min-width: 150px;
-      @apply(--paper-listbox);
+      @apply --paper-listbox;
     }
     </style>
     <!-- this div fulfills an a11y requirement for combobox, do not remove -->
