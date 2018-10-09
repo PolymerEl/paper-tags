@@ -94,287 +94,280 @@ Custom property | Description | Default
     </paper-menu-button>
   </template>
   <script>
-  class PaperTagsDropdown extends Polymer.mixinBehaviors([Polymer.IronValidatorBehavior,Polymer.IronFormElementBehavior, Polymer.IronButtonState,Polymer.IronControlState],Polymer.Element) {
-	static get is() {
-	    return 'paper-tags-dropdown'
-	}
-
-	static get properties() {
-	    return {
-	        /**
-	         * `valueObject` store value as object keys `{"value1": true, "value2": true}`
-	         */
-	        valueObject: {
-	          type: Object,
-	          notify: true,
-			  observer: '_observeValueArray'
-	        },
-	
-	        /**
-	         * `valueArray` store value as array `["value1", "value2"]`
-	         */
-	        valueArray: {
-	          type: Array,
-	          notify: true,
-	        },
-	
-	        keyPath: {
-	          type: String,
-	          value: 'id'
-	        },
-	
-	        labelPath: {
-	          type: String,
-	          value: 'label'
-	        },
-	
-	
-	        searchString: {
-	          type: String,
-	          value: ''
-	        },
-	
-	        items: {
-	          type: Array,
-	          value: function() {
-	            return [];
-	          }
-	        },
-	
-	        tagItems: {
-	          type: Array
-	        },
-	
-	        /**
-	         * When true, `showCounter` display a counter counting the number of tags
-	         */
-	        showCounter: {
-	          type: String
-	        },
-	
-	        /*
-	         * `maxTags` the maximum allowed number of tags
-	         */
-	        maxTags: {
-	          type: Number
-	        },
-	
-	        /*
-	         * `minTags` the minimum allowed number of tags
-	         */
-	        minTags: {
-	          type: Number
-	        },
-	
-	        /*
-	         * `readonly` - reflects to `disabled` when set to true.
-	         */
-	        readonly: {
-	          type: Boolean,
-	          observer: '_observeReadonly'
-	        },
-	
-	        /**
-	         * `tagTpl` a template Object used when creating new tags (e.g. '{"id":null, "label":"hello"}'). If not defuned, new tags will jus be Strings
-	         */
-	        tagTpl: {
-	          type: Object
-	        },
-	
-	        keyTarget: {
-	          type: Object,
-	          value: function() {
-	            return this.$.tagInput;
-	          }
-	        },
-	
-	        /**
-	         * The derived "label" of the currently selected item. This value
-	         * is the `label` property on the selected item if set, or else the
-	         * trimmed text content of the selected item.
-	         */
-	        selectedItemLabel: {
-	          type: String,
-	          notify: true,
-	          readOnly: true
-	        },
-	
-	        /**
-	         * The label for the dropdown.
-	         */
-	        label: {
-	          type: String
-	        },
-	
-	        /**
-	         * The placeholder for the dropdown.
-	         */
-	        placeholder: {
-	          type: String
-	        },
-	
-	        /**
-	         * The error message to display when invalid.
-	         */
-	        errorMessage: {
-	          type: String
-	        },
-	
-	        /**
-	         * True if the dropdown is open. Otherwise, false.
-	         */
-	        opened: {
-	          type: Boolean,
-	          notify: true,
-	          value: false,
-	          observer: '_openedChanged'
-	        },
-	
-	        /**
-	         * Set to true to disable the floating label. Bind this to the
-	         * `<paper-input-container>`'s `noLabelFloat` property.
-	         */
-	        noLabelFloat: {
-	          type: Boolean,
-	          value: false,
-	          reflectToAttribute: true
-	        },
-	
-	        /**
-	         * Set to true to always float the label. Bind this to the
-	         * `<paper-input-container>`'s `alwaysFloatLabel` property.
-	         */
-	        alwaysFloatLabel: {
-	          type: Boolean,
-	          value: false
-	        },
-	
-	        /**
-	         * Set to true to disable animations when opening and closing the
-	         * dropdown.
-	         */
-	        noAnimations: {
-	          type: Boolean,
-	          value: false
-	        },
-	
-	        /**
-	         * The orientation against which to align the menu dropdown
-	         * horizontally relative to the dropdown trigger.
-	         */
-	        horizontalAlign: {
-	          type: String,
-	          value: 'right'
-	        },
-	
-	        /**
-	         * The orientation against which to align the menu dropdown
-	         * vertically relative to the dropdown trigger.
-	         */
-	        verticalAlign: {
-	          type: String,
-	          value: 'top'
-	        }
-		}
-	}
-	
-	
-	static get listeners() {
-	     return {
-		 'tap': '_onTap'
-	     }
-	}
-	static get keyBindings() {
-	     return{
-		 'up down': 'open',
-		  'esc': 'close'
-		 
-		}
-	}
-	static get hostAttributes() {
-	     return {
-			role: 'combobox',
-		  'aria-autocomplete': 'none',
-		  'aria-haspopup': 'true'
-		}	
-	}
-	
-	
-	
-	static get observers() {
-	     return [
-		 '_observeItems(items)',
-		  '_observeValueArray(valueArray.splices)',
-		]
-	}
-
-	_observeReadonly(readonly, old) {
-	  if (readonly) {
-	    this.disabled = true;
-	    // remember that disabled property depends on readonly for run-time changes
-	    this._disabledFromReadonly = true;
-	    return;
-	  }
-	  if (old && readonly === false && this._disabledFromReadonly) {
-	    this.disabled = false;
-	  }
-	}
-
-	_observeItems(items) {
-	  // run every time item is set ore reset
-	  if (items) {
-	    this._isInitiatingItems = true;
-	    this.set('tagItems', this._filterValueItems(this.valueArray));
-	
-	    delete this._isInitiatingItems;
-	  }
-	}
-
-	_observeValueArray(splices) {
-		// run on any change to the valueArray
-      	this.set('tagItems', this._filterValueItems(this.valueArray));
+  class PaperTagsDropdown extends Polymer.mixinBehaviors([Polymer.IronValidatorBehavior, Polymer.IronFormElementBehavior, Polymer.IronButtonState, Polymer.IronControlState], Polymer.Element) {
+    static get is() {
+      return 'paper-tags-dropdown'
     }
 
-	_filterValueItems(valueArray) {
-		var filteredVals = [];
-		if (valueArray && this.items && this.items.length > 0) {
-		  filteredVals = this.items.filter(function(item) {
-			var itemKey = this.keyPath;
-			if (item[itemKey]) {
-			  return this.valueArray.indexOf(item[itemKey] + '') > -1;
-			}else {
-			  return this.valueArray.indexOf(item) > -1;
-			}
-		  }, this);
-		}
-		return filteredVals;
-	}
+    static get properties() {
+      return {
+        /**
+         * `valueObject` store value as object keys `{"value1": true, "value2": true}`
+         */
+        valueObject: {
+          type: Object,
+          notify: true,
+          observer: '_observeValueArray'
+        },
 
-	ready() {
-		if(super.ready){
-		    super.ready();
-		}
-	    this.$.menuButton.ignoreSelect = true;
-	    this.$.tagInput.allowAdd = false;
-	    if (this.valueObject && !this.valueArray) {
-	      this.set('valueArray', Object.keys(this.valueObject));
-	    }
-	}
+        /**
+         * `valueArray` store value as array `["value1", "value2"]`
+         */
+        valueArray: {
+          type: Array,
+          notify: true,
+        },
 
-	connectedCallback() {
-		if(super.connectedCallback){
-			super.connectedCallback();
-		}
-		// NOTE(cdata): Due to timing, a preselected value in a `IronSelectable`
-		// child will cause an `iron-select` event to fire while the element is
-		// still in a `DocumentFragment`. This has the effect of causing
-		// handlers not to fire. So, we double check this value on attached:
-		var contentElement = this.contentElement;
-		if (contentElement && contentElement.selectedItem) {
-		  this._setSelectedItem(contentElement.selectedItem);
-		}
-	}
+        keyPath: {
+          type: String,
+          value: 'id'
+        },
 
+        labelPath: {
+          type: String,
+          value: 'label'
+        },
+
+
+        searchString: {
+          type: String,
+          value: ''
+        },
+
+        items: {
+          type: Array,
+          value: function() {
+            return [];
+          }
+        },
+
+        tagItems: {
+          type: Array
+        },
+
+        /**
+         * When true, `showCounter` display a counter counting the number of tags
+         */
+        showCounter: {
+          type: String
+        },
+
+        /*
+         * `maxTags` the maximum allowed number of tags
+         */
+        maxTags: {
+          type: Number
+        },
+
+        /*
+         * `minTags` the minimum allowed number of tags
+         */
+        minTags: {
+          type: Number
+        },
+
+        /*
+         * `readonly` - reflects to `disabled` when set to true.
+         */
+        readonly: {
+          type: Boolean,
+          observer: '_observeReadonly'
+        },
+
+        /**
+         * `tagTpl` a template Object used when creating new tags (e.g. '{"id":null, "label":"hello"}'). If not defuned, new tags will jus be Strings
+         */
+        tagTpl: {
+          type: Object
+        },
+
+        /**
+         * The derived "label" of the currently selected item. This value
+         * is the `label` property on the selected item if set, or else the
+         * trimmed text content of the selected item.
+         */
+        selectedItemLabel: {
+          type: String,
+          notify: true,
+          readOnly: true
+        },
+
+        /**
+         * The label for the dropdown.
+         */
+        label: {
+          type: String
+        },
+
+        /**
+         * The placeholder for the dropdown.
+         */
+        placeholder: {
+          type: String
+        },
+
+        /**
+         * The error message to display when invalid.
+         */
+        errorMessage: {
+          type: String
+        },
+
+        /**
+         * True if the dropdown is open. Otherwise, false.
+         */
+        opened: {
+          type: Boolean,
+          notify: true,
+          value: false,
+          observer: '_openedChanged'
+        },
+
+        /**
+         * Set to true to disable the floating label. Bind this to the
+         * `<paper-input-container>`'s `noLabelFloat` property.
+         */
+        noLabelFloat: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+
+        /**
+         * Set to true to always float the label. Bind this to the
+         * `<paper-input-container>`'s `alwaysFloatLabel` property.
+         */
+        alwaysFloatLabel: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * Set to true to disable animations when opening and closing the
+         * dropdown.
+         */
+        noAnimations: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * The orientation against which to align the menu dropdown
+         * horizontally relative to the dropdown trigger.
+         */
+        horizontalAlign: {
+          type: String,
+          value: 'right'
+        },
+
+        /**
+         * The orientation against which to align the menu dropdown
+         * vertically relative to the dropdown trigger.
+         */
+        verticalAlign: {
+          type: String,
+          value: 'top'
+        },
+
+        keyTarget: {
+        	type: Object
+        }
+      };
+    }
+
+
+    static get listeners() {
+      return {
+        'tap': '_onTap'
+      };
+    }
+
+    static get keyBindings() {
+      return {
+        'up down': 'open',
+        'esc': 'close'
+      };
+    }
+
+    static get hostAttributes() {
+      return {
+        role: 'combobox',
+        'aria-autocomplete': 'none',
+        'aria-haspopup': 'true'
+      };
+    }
+
+    static get observers() {
+      return [
+        '_observeItems(items)',
+        '_observeValueArray(valueArray.splices)',
+      ];
+    }
+
+    _observeReadonly(readonly, old) {
+      if (readonly) {
+        this.disabled = true;
+        // remember that disabled property depends on readonly for run-time changes
+        this._disabledFromReadonly = true;
+        return;
+      }
+      if (old && readonly === false && this._disabledFromReadonly) {
+        this.disabled = false;
+      }
+    }
+
+    _observeItems(items) {
+      // run every time item is set ore reset
+      if (items) {
+        this._isInitiatingItems = true;
+        this.set('tagItems', this._filterValueItems(this.valueArray));
+
+        delete this._isInitiatingItems;
+      }
+    }
+
+    _observeValueArray(splices) {
+      // run on any change to the valueArray
+      this.set('tagItems', this._filterValueItems(this.valueArray));
+    }
+
+    _filterValueItems(valueArray) {
+      var filteredVals = [];
+      if (valueArray && this.items && this.items.length > 0) {
+        filteredVals = this.items.filter(function(item) {
+          var itemKey = this.keyPath;
+          if (item[itemKey]) {
+            return this.valueArray.indexOf(item[itemKey] + '') > -1;
+          } else {
+            return this.valueArray.indexOf(item) > -1;
+          }
+        }, this);
+      }
+      return filteredVals;
+    }
+
+    ready() {
+      super.ready();
+      this.$.menuButton.ignoreSelect = true;
+      this.$.tagInput.allowAdd = false;
+      if (this.valueObject && !this.valueArray) {
+        this.set('valueArray', Object.keys(this.valueObject));
+      }
+    }
+
+    connectedCallback() {
+      super.connectedCallback();
+
+      this.keyTarget = this.$.tagInput;
+      // NOTE(cdata): Due to timing, a preselected value in a `IronSelectable`
+      // child will cause an `iron-select` event to fire while the element is
+      // still in a `DocumentFragment`. This has the effect of causing
+      // handlers not to fire. So, we double check this value on attached:
+      var contentElement = this.contentElement;
+      if (contentElement && contentElement.selectedItem) {
+        this._setSelectedItem(contentElement.selectedItem);
+      }
+    }
 
     /**
      * The content element that is contained by the dropdown menu, if any.
@@ -503,7 +496,7 @@ Custom property | Description | Default
     _getValidity(_value) {
       return this.disabled || !this.required || (this.required && !!this.value);
     }
-     
+
     _openedChanged() {
       var openState = this.opened ? 'true' : 'false';
       var e = this.contentElement;
@@ -511,8 +504,8 @@ Custom property | Description | Default
         e.setAttribute('aria-expanded', openState);
       }
     }
-};
+  };
 
-customElements.define(PaperTagsDropdown.is, PaperTagsDropdown);
+  customElements.define(PaperTagsDropdown.is, PaperTagsDropdown);
   </script>
 </dom-module>

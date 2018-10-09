@@ -19,13 +19,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
   <link rel="import" href="../../paper-item/paper-item.html">
-  <link rel="import" href="../../paper-menu/paper-menu.html">
   <link rel="import" href="../paper-tags.html">
   <link rel="import" href="../paper-tags-input.html">
   <link rel="import" href="../paper-tags-dropdown.html">
   <link rel="import" href="../../hydrolysis/hydrolysis.html">
   <style is="custom-style" include="demo-pages-shared-styles">
-
   </style>
 </head>
 
@@ -42,13 +40,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <h4>paper-tags-input</h4>
     <demo-snippet class="centered-demo">
       <template>
-        <template  is="dom-bind">
-          <paper-tags-input id="control" label="input label" show-counter="tags" items='["hello", "new"]' value="{{value}}" value-join="{{valueJoin}}" maxLength="10"></paper-tags-input>
-          <div>
-            <div>value: {{valueJoin}}</div>
-            <div>input value: {{value}}</div>
-          </div>
-        </template>
+        <dom-bind>
+          <template>
+            <paper-tags-input id="control" label="input label" show-counter="tags" items='["hello", "new"]' value="{{value}}" value-join="{{valueJoin}}" maxLength="10"></paper-tags-input>
+            <div>
+              <div>value: {{valueJoin}}</div>
+              <div>input value: {{value}}</div>
+            </div>
+          </template>
+        </dom-bind>
       </template>
     </demo-snippet>
   </div>
@@ -56,42 +56,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <h4>paper-tags-dropdown</h4>
     <demo-snippet class="centered-demo">
       <template>
-        <template  id="tagDropdown" is="dom-bind">
-          <style is="custom-style">
-          paper-tags-dropdown {
-            --paper-menu: {
-              width: 200px;
+        <dom-bind id="tagDropdown">
+          <template>
+            <style is="custom-style">
+            paper-tags-dropdown {
+              --paper-menu: {
+                width: 200px;
+              }
             }
-          }
-          </style>
-          <paper-tags-dropdown id="control" items="{{items}}" label-path="label" noink label="label dropdown" value-object='{"5": "true"}'></paper-tags-dropdown>
-        </template>
+            </style>
+            <paper-tags-dropdown id="control" items="{{items}}" label-path="label" noink label="label dropdown" value-object='{"5": "true"}'></paper-tags-dropdown>
+          </template>
+        </dom-bind>
       </template>
     </demo-snippet>
   </div>
   <div class="vertical-section-container centered">
-	<h4>paper-tags-dropdown string array</h4>
-	<demo-snippet class="centered-demo">
-		<template>
-			<template id="stringArrayTagDropdown" is="dom-bind">
-				<style is="custom-style">
-					paper-tags-dropdown {
-						--paper-menu: {
-							width: 200px;
-						}
-					}
-				</style>
-				<paper-tags-dropdown
-					id="stringControl"
-					items='["Doe", "Rae", "Mee", "Faa", "So", "Laa", "Tee", "Daa"]'
-					label-path="label"
-					noink
-					label="label dropdown"
-					value-array='["Rae"]'>
-				</paper-tags-dropdown>
-			</template>
-		</template>
-	</demo-snippet>
+    <h4>paper-tags-dropdown string array</h4>
+    <demo-snippet class="centered-demo">
+      <template>
+        <dom-bind>
+          <template id="stringArrayTagDropdown">
+            <style is="custom-style">
+            paper-tags-dropdown {
+              --paper-menu: {
+                width: 200px;
+              }
+            }
+            </style>
+            <paper-tags-dropdown id="stringControl" items='["Doe", "Rae", "Mee", "Faa", "So", "Laa", "Tee", "Daa"]' label-path="label" noink label="label dropdown" value-array='["Rae"]'>
+            </paper-tags-dropdown>
+          </template>
+        </dom-bind>
+      </template>
+    </demo-snippet>
   </div>
   <script>
   window.addEventListener('WebComponentsReady', function() {
