@@ -12,9 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../iron-behaviors/iron-button-state.html">
 <link rel="import" href="../iron-behaviors/iron-control-state.html">
-<link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
-<link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../paper-menu/paper-menu.html">
@@ -73,12 +71,43 @@ Custom property | Description | Default
     </style>
     <!-- this div fulfills an a11y requirement for combobox, do not remove -->
     <div role="button"></div>
-    <paper-menu-button id="menuButton" vertical-align="[[verticalAlign]]" horizontal-align="[[horizontalAlign]]" vertical-offset="[[_computeMenuVerticalOffset(noLabelFloat)]]" disabled="[[disabled]]" no-animations="[[noAnimations]]" opened="{{opened}}">
+    <paper-menu-button
+      id="menuButton"
+      vertical-align="[[verticalAlign]]"
+      horizontal-align="[[horizontalAlign]]"
+      vertical-offset="[[_computeMenuVerticalOffset(noLabelFloat)]]"
+      disabled="[[disabled]]"
+      no-animations="[[noAnimations]]"
+      opened="{{opened}}">
       <div class="dropdown-trigger">
         <paper-ripple></paper-ripple>
         <!-- paper-input has type="text" for a11y, do not remove -->
         <iron-a11y-keys id="a11y" target="[[keyTarget]]" keys="[[_computeKeys()]]" on-keys-pressed="_onAscii"></iron-a11y-keys>
-        <paper-tags-input max-tags="[[maxTags]]" prevent-remove-tag="[[preventRemoveTag]]" min-tags="[[minTags]]" id="tagInput" value-object="{{valueObject}}" value-array="{{valueArray}}" on-tap="_onTagTap" tag-tpl="[[tagTpl]]" items="[[tagItems]]" value="{{value}}" icon="[[icon]]" item-class="[[itemClass]]" class-accessor="[[classAccessor]]" label-path="[[labelPath]]" icon-accessor="[[iconAccessor]]" key-path="[[keyPath]]" invalid="[[invalid]]" readonly="[[readonly]]" disabled="[[disabled]]" placeholder="[[placeholder]]" error-message="[[errorMessage]]" label="[[label]]" show-counter="[[showCounter]]">
+        <paper-tags-input
+          id="tagInput"
+          auto-validate="[[autoValidate]]"
+          max-tags="[[maxTags]]"
+          prevent-remove-tag="[[preventRemoveTag]]"
+          min-tags="[[minTags]]"
+          value-object="{{valueObject}}"
+          value-array="{{valueArray}}"
+          on-tap="_onTagTap"
+          tag-tpl="[[tagTpl]]"
+          items="[[tagItems]]"
+          value="{{value}}"
+          icon="[[icon]]"
+          item-class="[[itemClass]]"
+          class-accessor="[[classAccessor]]"
+          label-path="[[labelPath]]"
+          icon-accessor="[[iconAccessor]]"
+          key-path="[[keyPath]]"
+          invalid="{{invalid}}"
+          readonly="[[readonly]]"
+          disabled="[[disabled]]"
+          placeholder="[[placeholder]]"
+          error-message="[[errorMessage]]"
+          label="[[label]]"
+          show-counter="[[showCounter]]">
           <iron-icon icon="paper-dropdown-menu:arrow-drop-down" suffix></iron-icon>
         </paper-tags-input>
       </div>
@@ -102,9 +131,7 @@ Custom property | Description | Default
 
       behaviors: [
         Polymer.IronButtonState,
-        Polymer.IronControlState,
-        Polymer.IronFormElementBehavior,
-        Polymer.IronValidatableBehavior
+        Polymer.IronControlState
       ],
 
       properties: {
@@ -115,7 +142,17 @@ Custom property | Description | Default
         valueObject: {
           type: Object,
           notify: true,
-		  observer: '_observeValueArray'
+          observer: '_observeValueArray'
+        },
+
+        autoValidate: {
+          type: Boolean,
+          value: false
+        },
+
+        invalid: {
+          type: Boolean,
+          value: false
         },
 
         /**
