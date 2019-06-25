@@ -61,7 +61,7 @@ Custom property | Description | Default
     </style>
     <!-- this div fulfills an a11y requirement for combobox, do not remove -->
     <div role="button"></div>
-    <paper-menu-button id="menuButton" vertical-align="[[verticalAlign]]" horizontal-align="[[horizontalAlign]]" vertical-offset="[[_computeMenuVerticalOffset(noLabelFloat)]]" disabled="[[disabled]]" no-animations="[[noAnimations]]" __on-iron-select="_onSelectionChange" __on-iron-deselect="_onSelectionChange" opened="{{opened}}">
+    <paper-menu-button id="menuButton" vertical-align="[[verticalAlign]]" horizontal-align="[[horizontalAlign]]" vertical-offset="[[ verticalOffset ]]" disabled="[[disabled]]" no-animations="[[noAnimations]]" __on-iron-select="_onSelectionChange" __on-iron-deselect="_onSelectionChange" opened="{{opened}}">
       <div class="dropdown-trigger">
         <paper-ripple></paper-ripple>
         <!-- paper-input has type="text" for a11y, do not remove -->
@@ -227,7 +227,9 @@ Custom property | Description | Default
           type: Boolean,
           value: false,
           reflectToAttribute: true
-        }
+        },
+
+        verticalOffset: Number
       },
 
       listeners: {
@@ -248,6 +250,7 @@ Custom property | Description | Default
       observers: [
         // '_observeValueArray(valueArray.splices)',
         '_observeItems(items.splices)',
+        '_computeMenuVerticalOffset(noLabelFloat)'
       ],
 
       _observeItems: function(splices) {
@@ -406,8 +409,13 @@ Custom property | Description | Default
       },
 
       _onAscii: function(event) {
+        var me = this;
         this.async(function() {
-          this.set('searchString', this.$.tagInput.value)
+          this.set('searchString', this.$.tagInput.value);
+          this.set('verticalOffset', this.$.tagInput.offsetHeight);
+          this.async(function() {
+            me.open();
+          }, 1000);
         }, 30);
 
       },
