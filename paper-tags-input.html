@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../paper-styles/typography.html">
 <link rel="import" href="paper-tags.html">
 <link rel="import" href="paper-tags-mixin.html">
 <!--
@@ -44,8 +45,6 @@ Custom property | Description | Default
       }
     }
 
-    paper-tags {}
-
     paper-tags[readonly] {
       opacity: 0.6;
     }
@@ -56,7 +55,9 @@ Custom property | Description | Default
     }
 
     .paper-tags-counter {
-      display: inline-block;
+      text-align: right;
+      @apply --paper-font-caption;
+      @apply --paper-input-char-counter;
     }
     </style>
     <iron-a11y-keys id="a11y" target="[[target]]" keys="enter" on-keys-pressed="onEnter"></iron-a11y-keys>
@@ -67,7 +68,6 @@ Custom property | Description | Default
     	readonly$="[[readonly]]" 
     	placeholder$="[[placeholder]]" 
     	disabled$="[[disabled]]" 
-    	invalid="[[invalid]]" 
     	label="[[label]]" 
     	value="{{value}}" 
     	on-tap="_onInputTap"
@@ -80,7 +80,10 @@ Custom property | Description | Default
       	id="paperTags" 
       	readonly$="[[readonly]]" 
       	items="{{items}}" 
-      	icon="[[icon]]" 
+      	icon="[[icon]]"
+        get-style="[[getStyle]]"
+        get-name="[[getName]]"
+        get-label="[[getLabel]]"
       	item-class="[[itemClass]]" 
       	class-path="[[classPath]]" 
       	label-path="[[labelPath]]" 
@@ -90,7 +93,7 @@ Custom property | Description | Default
       <slot name="suffix" slot="suffix"></slot>
     </paper-input>
     <template is="dom-if" if="{{showCounter}}">
-      <div class="paper-tags-counter">
+      <div class="paper-tags-counter" >
         <paper-badge class="paper-tags-badge" label="[[items.length]]"></paper-badge> [[showCounter]]
       </div>
     </template>
@@ -103,6 +106,17 @@ class PaperTagsInput extends PaperTagsMixin(Polymer.Element) {
   }
   static get properties() {
     return {
+
+      /**
+       * The label for this input. If you're using PaperInputBehavior to
+       * implement your own paper-input-like element, bind this to
+       * `<label>`'s content and `hidden` property, e.g.
+       * `<label hidden$="[[!label]]">[[label]]</label>` in your `template`
+       */
+      label: {
+        type: String
+      },
+
       /**
        * `preventRemoveTag` hide the `close` icon and prevent removing a tag when true.
        */
@@ -158,7 +172,26 @@ class PaperTagsInput extends PaperTagsMixin(Polymer.Element) {
        */
       preventAdd: {
         type: Boolean
-      }
+      },
+
+      /*
+       * `getStyle` Style getter
+       */
+       getStyle: {
+         type: Function
+      },
+       /*
+       * `getName` Name getter
+       */
+       getName: {
+         type: Function
+      },
+      /*
+       * `getLabel` Label getter
+       */
+       getStyle: {
+         type: Function
+      },
     };
   }
   static get observers() {
@@ -194,7 +227,7 @@ class PaperTagsInput extends PaperTagsMixin(Polymer.Element) {
    
     this.items.forEach((item) => {
     	const type = typeof item;
-      const id = type === 'string' || type ==='number' ? item  : this.get(this.keyPath, item);
+      const id = type === 'string' || type ==='number' ? item  : this.getName ? this.getName(item) : this.get(this.keyPath, item);
       keys.push(id + '');
     });
 

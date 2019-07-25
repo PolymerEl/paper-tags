@@ -123,6 +123,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       label: 'Bar'
     }];
 
+    tagDropdown.$.control.getTagStyle = function(item) {
+      console.info("ITEM", item);
+      return 'background-color: red; color: white;'
+    }
+
     setTimeout(function() {
       tagDropdown.$.control.set('items', data);
     }, 100);

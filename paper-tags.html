@@ -53,7 +53,7 @@ Custom property | Description | Default
 
     div.paper-tag-item {
       margin-bottom: var(--paper-tag-margin, 3px);
-      border: 1px solid var(--paper-tag-focus-color, var(--default-primary-color));
+      border: 1px solid var(--paper-tag-color, var(--primary-color));
       font-size: 13px;
       color: var(--paper-tag-text-color, var(--secondary-text-color));
       border-radius: 4px;
@@ -65,7 +65,7 @@ Custom property | Description | Default
     }
 
     paper-icon-button {
-      color: var(--paper-tag-focus-color, var(--default-primary-color));
+      color: var(--paper-tag-color, var(--primary-color));
       width: 20px;
       height: 20px;
       padding: 0;
@@ -80,8 +80,8 @@ Custom property | Description | Default
     }
     </style>
     <template is="dom-repeat" items="[[items]]">
-      <div class$="paper-tag-item [[doGet(classPath, item, 'itemClass')]]">
-        <span class="paper-tag-item-label">[[doGet(labelPath, item, 'label')]]</span>
+      <div style$="[[getStyle(item)]]" class$="paper-tag-item [[doGet(classPath, item, 'itemClass')]]">
+        <span class="paper-tag-item-label">[[getLabel(item)]]</span>
         <paper-icon-button icon="[[doGet(iconPath, item, 'icon')]]"></paper-icon-button>
         <paper-icon-button icon="icons:close" hidden$="[[preventRemoveTag]]" on-tap="_removeTag"></paper-icon-button>
       </div>
@@ -114,6 +114,25 @@ class PaperTags extends PaperTagsMixin(Polymer.Element) {
         value: function() {
           return [];
         }
+      },
+
+      /*
+       * `getStyle` Style getter
+       */
+       getStyle: {
+         type: Function,
+         value: function() {
+           return this.getStyle.bind(this);
+         }
+      },
+       /*
+       * `getLabel`Label getter
+       */
+       getLabel: {
+         type: Function,
+         value: function() {
+           return this.getStyle.bind(this);
+         }
       }
     };
   }
@@ -128,6 +147,12 @@ class PaperTags extends PaperTagsMixin(Polymer.Element) {
     return '';
   }
 
+
+  getLabel(item) {
+    return this.doGet(this.labelPath, item, 'label');
+    
+  } 
+
   _removeTag(event) {
     event.stopPropagation();
     if (this.readonly) {
@@ -137,8 +162,11 @@ class PaperTags extends PaperTagsMixin(Polymer.Element) {
     if (index > -1) {
       this.splice('items', index, 1);
     }
-
   }
+
+  getStyle(item) {
+    return '';
+  }  
 }
 
 customElements.define(PaperTags.is, PaperTags);

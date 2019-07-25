@@ -117,9 +117,14 @@ Custom property | Description | Default
           readonly="[[readonly]]" 
           disabled="[[disabled]]" 
           placeholder="[[placeholder]]" 
+          always-float-label="[[alwaysFloatLabel]]"
+          no-label-float="[[noLabelFloat]]"
           error-message="[[errorMessage]]" 
           label="[[label]]" 
-          show-counter="[[showCounter]]">
+          show-counter="[[showCounter]]"
+          get-style="[[getTagStyle]]"
+          get-label="[[getLabel]]"
+          get-name="[[getName]]">
           <iron-icon icon="paper-dropdown-menu:arrow-drop-down" slot="suffix"></iron-icon>
         </paper-tags-input>
       </div>
@@ -127,7 +132,6 @@ Custom property | Description | Default
         slot="dropdown-content" 
         disabled="[[disabled]]" 
         selected-values="{{valueArray}}" 
-        items="{{listItems}}" 
         attr-for-selected="name" 
         multi>
         <template is="dom-if" if="[[allowSearch]]">
@@ -137,7 +141,8 @@ Custom property | Description | Default
               on-keyup="_stopEventPropagation"></paper-input>
         </template>
         <template is="dom-repeat" items="[[items]]" filter="{{_computeFilter(searchString)}}">
-          <paper-item name="[[doGet(keyPath,item)]]">[[doGet(labelPath,item)]]</paper-item>
+          <!-- <paper-item name="[[doGet(keyPath,item)]]">[[doGet(labelPath,item)]]</paper-item> -->
+          <paper-item style$="[[getStyle(item)]]" name="[[getName(item)]]">[[getLabel(item)]]</paper-item>
         </template>
       </paper-listbox>
       <slot id="content" name="dropdown-content"></slot>
@@ -149,7 +154,6 @@ Custom property | Description | Default
     Polymer.IronFormElementBehavior,
     Polymer.IronButtonState,
     Polymer.IronControlState,
-    // Polymer.IronMultiSelectableBehavior
   ], Polymer.Element) {
 
     static get is() {
@@ -158,22 +162,6 @@ Custom property | Description | Default
 
     static get properties() {
       return {
-        /**
-         * `valueObject` store value as object keys `{"value1": true, "value2": true}`
-         */
-        // valueObject: {
-        //   type: Object,
-        //   notify: true
-        //   // observer: '_observeValueArray'
-        // },
-
-        /* 
-         * listItems` the 
-         */
-        listItems: {
-          type: Array
-        },
-
         /**
          * `valueArray` store value as array `["value1", "value2"]`
          */
@@ -395,7 +383,47 @@ Custom property | Description | Default
          */
         allowAdd: {
           type:Boolean
-        }
+        },
+
+        /*
+         * `getLabel` label getter
+         */
+         getLabel: {
+           type: Function,
+           value: function() {
+             return this.getLabel.bind(this);
+           }
+        },
+
+        /*
+         * `getName` Name getter
+         */
+         getName: {
+           type: Function,
+           value: function() {
+             return this.getName.bind(this);
+           }
+        },
+        /*
+         * `getStyle` Style getter
+         */
+         getStyle: {
+           type: Function,
+           value: function() {
+             return this.getStyle.bind(this);
+           }
+        },
+
+        /*
+         * `getTagStyle` Style getter for tag item
+         */
+         getTagStyle: {
+           type: Function,
+           value: function() {
+             return this.getTagStyle.bind(this);
+           }
+        },
+        
 
       };
     }
@@ -443,7 +471,7 @@ Custom property | Description | Default
     }
 
     _observeItems(items) {
-      // run every time item is set ore reset
+      // run every time item is set or reset
       if (items) {
         this._isInitiatingItems = true;
         // we override labelPath and keyPath if items is composed of primitives
@@ -466,8 +494,8 @@ Custom property | Description | Default
     _filterValueItems(valueArray) {
       if (valueArray && this.items && this.items.length > 0) {
         return this.items.filter(item => {
-          let val; 
-          if (this.keyPath && (val = this.get(this.keyPath, item))) {
+          const val = this.getName(item) || (this.keyPath &&  this.get(this.keyPath, item))
+          if (val) {
             return this.valueArray.indexOf(val + '') > -1;
           } else {
             return this.valueArray.indexOf(item) > -1;
@@ -571,12 +599,25 @@ Custom property | Description | Default
         return this.get(path, item);
     }
 
-    // _onTagTap(e) {
-      // console.info(e);
-      // if (e.srcElement.localName === 'input') {
-      //   e.stopPropagation();
-      // }
-    // }
+    getLabel(item) {
+      if(this.labelPath) {
+        return this.doGet(this.labelPath, item);
+      }
+    }  
+    
+    getName(item) {
+      if(this.keyPath) {
+        return this.doGet(this.keyPath, item);
+      }
+    }  
+    
+    getStyle(item) {
+      return '';
+    }  
+
+    getTagStyle(item) {
+      return '';
+    }  
 
     _onAscii(event) {
       if(!this.allowAdd) {
