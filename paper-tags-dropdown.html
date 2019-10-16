@@ -363,10 +363,11 @@ Custom property | Description | Default
 
       _update: function() {
         var me = this;
+        me.close();
         me.source(me.searchString, function(items) {
           me.items = items;
           me.open();
-          me.async(function() {           
+          me.async(function() {
             me.$.tagInput.querySelector('paper-input').focus();
           }, 200);
         });
