@@ -1,15 +1,31 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import'@polymer/paper-menu-button/paper-menu-button';
-import '@polymer/paper-dropdown-menu/paper-dropdown-menu-shared-styles';
+import '@polymer/iron-selector/iron-multi-selectable.js';
+import { IronButtonState } from '@polymer/iron-behaviors/iron-button-state.js';
+import { IronControlState } from '@polymer/iron-behaviors/iron-control-state.js';
+import { IronFormElementBehavior } from '@polymer/iron-form-element-behavior/iron-form-element-behavior.js';
+import { IronValidatableBehavior } from '@polymer/iron-validatable-behavior/iron-validatable-behavior.js';
+import '@polymer/polymer/polymer-legacy.js';
+import '@polymer/iron-a11y-keys-behavior/iron-a11y-keys-behavior.js';
 import '@polymer/paper-ripple/paper-ripple.js';
+import '@polymer/iron-a11y-keys/iron-a11y-keys.js';
+import '@polymer/polymer/polymer-legacy.js';
 import '@polymer/paper-listbox/paper-listbox';
 import '@polymer/paper-item/paper-item';
+import '@polymer/paper-dropdown-menu/paper-dropdown-menu-icons.js';
+import '@polymer/paper-dropdown-menu/paper-dropdown-menu-shared-styles.js';
 import './paper-tags-input';
-import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/paper-input/paper-input.js';
+import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+import * as gestures from '@polymer/polymer/lib/utils/gestures.js';
+import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
 
-
-class PaperTagsDropdown extends PolymerElement {
+class PaperTagsDropdown extends mixinBehaviors([
+  IronValidatableBehavior,
+  IronFormElementBehavior,
+  IronButtonState,
+  IronControlState,
+], PolymerElement) {
 
     static get is() {
         return 'paper-tags-dropdown';
@@ -387,7 +403,7 @@ class PaperTagsDropdown extends PolymerElement {
        */
     get contentElement() {
         // Polymer 2.x returns slot.assignedNodes which can contain text nodes.
-        var nodes = Polymer.dom(this.$.content).getDistributedNodes();
+        var nodes = dom(this.$.content).getDistributedNodes();
         for (var i = 0, l = nodes.length; i < l; i++) {
           if (nodes[i].nodeType === Node.ELEMENT_NODE) {
             return nodes[i];
@@ -438,7 +454,7 @@ class PaperTagsDropdown extends PolymerElement {
        * @param {CustomEvent} event A tap event.
        */
     _onTap(event) {
-        if (Polymer.Gestures.findOriginalTarget(event) === this) {
+        if (gestures.findOriginalTarget(event) === this) {
           this.open();
         }
     }
@@ -622,4 +638,4 @@ class PaperTagsDropdown extends PolymerElement {
     
 }
 
-window.customElements.define(PaperTagsDropdown.is, PaperTagsDropdown)
+customElements.define(PaperTagsDropdown.is, PaperTagsDropdown)

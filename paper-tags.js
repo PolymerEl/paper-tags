@@ -1,8 +1,14 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/paper-icon-button/paper-icon-button';
+import '@polymer/paper-input/paper-input.js';
+import '@polymer/paper-badge/paper-badge.js';
+import '@polymer/iron-icons/iron-icons.js';
+import '@polymer/iron-icon/iron-icon.js';
+import '@polymer/polymer/polymer-legacy.js';
+import './paper-tags-mixing';
 
 
-class PaperTags extends PolymerElement {
+class PaperTags extends PaperTagsMixin(PolymerElement){
 
     static get is() {
         return 'paper-tags';
@@ -153,4 +159,4 @@ class PaperTags extends PolymerElement {
 
 }
 
-window.customElements.define(PaperTags.is, PaperTags);
+customElements.define(PaperTags.is, PaperTags);
