@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 
-import './value-array-firebase-mixin';
+import {ValueArrayFirebaseMixin} from './value-array-firebase-mixin';
 /**
  * `Polymer.PaperTagsMixin` defines recurent properties in paper-tags family (paper-tags, paper-tags-input, paper-tags-dropdown)
  *

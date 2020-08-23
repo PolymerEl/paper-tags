@@ -5,7 +5,7 @@ import '@polymer/paper-badge/paper-badge.js';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/polymer/polymer-legacy.js';
-import './paper-tags-mixing';
+import {PaperTagsMixin} from './paper-tags-mixing';
 
 
 class PaperTags extends PaperTagsMixin(PolymerElement){

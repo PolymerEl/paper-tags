@@ -6,9 +6,11 @@ import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/iron-icons/social-icons.js';
 import '@polymer/paper-input/paper-input.js';
-import './paper-tags-mixing';
-import './paper-tags';
 import '@polymer/iron-a11y-keys/iron-a11y-keys.js';
+
+import {PaperTagsMixin} from './paper-tags-mixing';
+import './paper-tags';
+
 
 class PaperTagsInput extends PaperTagsMixin(PolymerElement) {
     static get is() {
@@ -293,7 +295,7 @@ class PaperTagsInput extends PaperTagsMixin(PolymerElement) {
                 @apply --paper-input-char-counter;
             }
         </style>
-        <template>
+        
             <iron-a11y-keys id="a11y" target="[[target]]" keys="enter" on-keys-pressed="onEnter"></iron-a11y-keys>
                 <iron-a11y-keys id="a11y" target="[[target]]" keys="backspace" on-keys-pressed="onBackspace"></iron-a11y-keys>
                 <paper-input 
@@ -332,7 +334,7 @@ class PaperTagsInput extends PaperTagsMixin(PolymerElement) {
                     <paper-badge class="paper-tags-badge" label="[[items.length]]"></paper-badge> [[showCounter]]
                 </div>
                 </template>
-        </template>
+        
         `;
     }
 }

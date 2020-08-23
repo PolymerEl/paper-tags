@@ -1,5 +1,5 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import'@polymer/paper-menu-button/paper-menu-button';
+import '@polymer/paper-menu-button/paper-menu-button.js';
 import '@polymer/iron-selector/iron-multi-selectable.js';
 import { IronButtonState } from '@polymer/iron-behaviors/iron-button-state.js';
 import { IronControlState } from '@polymer/iron-behaviors/iron-control-state.js';
@@ -563,7 +563,7 @@ class PaperTagsDropdown extends mixinBehaviors([
                 @apply --paper-listbox;
             }
         </style>
-        <template>
+        
             <div role="button"></div>
             <paper-menu-button 
                 id="menuButton" 
@@ -632,7 +632,7 @@ class PaperTagsDropdown extends mixinBehaviors([
                 </paper-listbox>
                 <slot id="content" name="dropdown-content"></slot>
             </paper-menu-button>
-        </template>
+        
         `;
     }
     
