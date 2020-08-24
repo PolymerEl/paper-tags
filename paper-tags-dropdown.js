@@ -5,7 +5,9 @@ import { IronButtonState } from '@polymer/iron-behaviors/iron-button-state.js';
 import { IronControlState } from '@polymer/iron-behaviors/iron-control-state.js';
 import { IronFormElementBehavior } from '@polymer/iron-form-element-behavior/iron-form-element-behavior.js';
 import { IronValidatableBehavior } from '@polymer/iron-validatable-behavior/iron-validatable-behavior.js';
+import {NeonAnimationRunnerBehavior} from '@polymer/neon-animation/neon-animation-runner-behavior.js';
 import '@polymer/polymer/polymer-legacy.js';
+import '@polymer/neon-animation/animations/scale-down-animation.js';
 import '@polymer/iron-a11y-keys-behavior/iron-a11y-keys-behavior.js';
 import '@polymer/paper-ripple/paper-ripple.js';
 import '@polymer/iron-a11y-keys/iron-a11y-keys.js';
@@ -25,6 +27,7 @@ class PaperTagsDropdown extends mixinBehaviors([
   IronFormElementBehavior,
   IronButtonState,
   IronControlState,
+  NeonAnimationRunnerBehavior,
 ], PolymerElement) {
 
     static get is() {
@@ -396,6 +399,14 @@ class PaperTagsDropdown extends mixinBehaviors([
         if (contentElement && contentElement.selectedItem) {
           this._setSelectedItem(contentElement.selectedItem);
         }
+        this.animationConfig = {
+          // provided by neon-animation/animations/scale-down-animation.js
+          name: 'scale-down-animation',
+          node: this.$.animatable,
+        };
+    
+        setTimeout(() => this.playAnimation(), 1000);
+
     }
   
       /**
