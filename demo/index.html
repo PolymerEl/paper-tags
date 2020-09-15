@@ -14,19 +14,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>paper-tags Demo</title>
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2.0.0/webcomponents-loader.js"></script>
+  <script src="node_modules/web-animations-js/web-animations.min.js"></script>
   <!-- Ensure Web Animations polyfill is loaded since neon-animation 2.0 doesn't import it -->
-  <link rel="import" href="../../neon-animation/web-animations.html">
-  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-  <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
-  <link rel="import" href="../../paper-item/paper-item.html">
-  <link rel="import" href="../paper-tags.html">
-  <link rel="import" href="../paper-tags-input.html">
-  <link rel="import" href="../paper-tags-dropdown.html">
-  <link rel="import" href="../../hydrolysis/hydrolysis.html">
-  <style is="custom-style" include="demo-pages-shared-styles">
-  </style>
+  <script type="module">
+    import '@polymer/neon-animation/neon-animated-pages.js';
+    import 'web-animations-js/web-animations-next-lite.min.js';
+    import '@polymer/neon-animation/neon-animatable.js';
+    import '@polymer/neon-animation/animations/slide-from-right-animation.js';
+    import '@polymer/neon-animation/animations/slide-left-animation.js';
+    import  "@polymer/iron-demo-helpers/demo-snippet.js";
+    import  "@polymer/iron-demo-helpers/demo-pages-shared-styles.js";
+    import  "@polymer/paper-dropdown-menu/paper-dropdown-menu.js";
+    import  "@polymer/paper-item/paper-item.js";
+    import  "../paper-tags";
+    import  "../paper-tags-input.js";
+    import  "../paper-tags-dropdown.js";
+    import  "hydrolysis/hydrolysis.js";
+    import {html} from '@polymer/polymer/lib/utils/html-tag.js';
+
+    const template = html `<custom-style><style is="custom-style" include="demo-pages-shared-styles"></style><custom-style>`
+    document.body.appendChild(template.content);
+  </script>
+   <script type="text/javascript">
+    const _customElementsDefine = window.customElements.define;
+    window.customElements.define = (name, cl, conf) => {
+        if (!customElements.get(name)) {
+            _customElementsDefine.call(window.customElements, name, cl, conf);
+        }
+        else {
+            console.warn(`${name} has been defined twice`);
+        }
+    };
+
+</script>
 </head>
 
 <body>

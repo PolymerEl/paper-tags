@@ -1,0 +1,59 @@
+{
+  "description": "paper-input and paper-dropdown-menu with tags",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "tags",
+    "material design",
+    "polymer",
+    "form",
+    "input",
+    "paper-input"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Weaverize/paper-tags.git"
+  },
+  "homepage": "https://github.com/PolymerEl/paper-tags",
+  "name": "paper-tags",
+  "version": "1.4.2",
+  "authors": [
+    "christophe.geiser <christophe.geiser@e-smile.org>"
+  ],
+  "main": "paper-tags-import.js",
+  "license": "https://github.com/PolymerEl/LICENCE",
+  "ignore": [],
+  "dependencies": {
+    "@polymer/iron-a11y-keys": "^3.0.1",
+    "@polymer/iron-behaviors": "^3.0.1",
+    "@polymer/iron-icon": "^3.0.1",
+    "@polymer/iron-icons": "^3.0.1",
+    "@polymer/iron-validatable-behavior": "^3.0.1",
+    "@polymer/neon-animation": "^3.0.1",
+    "@polymer/paper-badge": "^3.1.0",
+    "@polymer/paper-button": "^3.0.1",
+    "@polymer/paper-dropdown-menu": "^3.1.0",
+    "@polymer/paper-icon-button": "^3.0.2",
+    "@polymer/paper-input": "^3.2.1",
+    "@polymer/paper-item": "^3.0.1",
+    "@polymer/paper-listbox": "^3.0.1",
+    "@polymer/paper-ripple": "^3.0.2",
+    "@polymer/polymer": "^3.4.1",
+    "hydrolysis": "^1.25.0",
+    "web-animations-js": "^2.3.2"
+  },
+  "devDependencies": {
+    "@polymer/iron-component-page": "^4.0.1",
+    "@polymer/iron-demo-helpers": "^3.1.0",
+    "@webcomponents/webcomponentsjs": "^2.4.4",
+    "wct-browser-legacy": "^1.0.2",
+    "web-component-tester": "^6.9.2"
+  },
+  "resolutions": {
+    "inherits": "2.0.3",
+    "samsam": "1.1.3",
+    "supports-color": "3.1.2",
+    "type-detect": "1.0.0"
+  },
+  "author": "christophe.geiser <christophe.geiser@e-smile.org>"
+}
